@@ -1,29 +1,103 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Order, OrderDocument } from './schemas/order.schema';
+import { Model } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { ORDER_STATUS } from 'src/common/enums';
+import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
+import { convertToObjectId } from 'src/utils';
+import { CustomersService } from '../customers/customers.service';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return { message: 'This action adds a new order', data: createOrderDto };
+  constructor(
+    @InjectModel(Order.name)
+    private orderModel: Model<OrderDocument>,
+    private customerService: CustomersService,
+  ) {}
+  async create(createOrderDto: CreateOrderDto): Promise<void> {
+    await this.customerService.getCustomer(createOrderDto.customer);
+    await this.orderModel.create(createOrderDto);
   }
 
-  findAll() {
-    return { message: 'This action returns all orders' };
-  }
-
-  findOne(id: string) {
-    return { message: `This action returns a #${id} order` };
-  }
-
-  update(id: string, updateOrderDto: UpdateOrderDto) {
+  async findAll(query: OrdersPaginationQueryDto) {
+    const {
+      page = 1,
+      limit = 10,
+      sortBy = 'createdAt',
+      sortOrder = 'desc',
+      status,
+      minTotalAmount,
+      maxTotalAmount,
+      fromDate,
+      toDate,
+      customer,
+    } = query;
+    const skip = (page - 1) * limit;
+    const filter: Record<string, unknown> = { isDeleted: false };
+    if (status) filter.status = status;
+    if (minTotalAmount != null || maxTotalAmount != null) {
+      filter.totalAmount = {
+        ...(minTotalAmount != null ? { $gte: minTotalAmount } : {}),
+        ...(maxTotalAmount != null ? { $lte: maxTotalAmount } : {}),
+      };
+    }
+    if (fromDate || toDate) {
+      filter.createdAt = {
+        ...(fromDate ? { $gte: fromDate } : {}),
+        ...(toDate ? { $lte: toDate } : {}),
+      };
+    }
+    if (customer) {
+      filter.customer = convertToObjectId(customer);
+    }
+    const sort: Record<string, 1 | -1> = {
+      [sortBy]: sortOrder === 'asc' ? 1 : -1,
+    };
+    const [items, total] = await Promise.all([
+      this.orderModel
+        .find(filter)
+        .populate('customer')
+        .sort(sort)
+        .skip(skip)
+        .limit(limit),
+      this.orderModel.countDocuments(filter),
+    ]);
     return {
-      message: `This action updates a #${id} order`,
-      data: updateOrderDto,
+      items,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     };
   }
 
-  remove(id: string) {
-    return { message: `This action removes a #${id} order` };
+  async findOne(id: string): Promise<Order> {
+    const order = await this.orderModel
+      .findOne({ _id: id, isDeleted: false })
+      .populate('customer');
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
   }
+
+  async update(id: string, updateOrderDto: UpdateOrderDto): Promise<void> {
+    const order = await this.orderModel.findByIdAndUpdate(id, updateOrderDto);
+    if (!order) throw new NotFoundException('Order not found');
+  }
+  async updateStatus(id: string, status: ORDER_STATUS) {
+    const order = await this.orderModel.findByIdAndUpdate(id, { status });
+    if (!order) throw new NotFoundException('Order not found');
+    return order;
+  }
+  async remove(id: string): Promise<void> {
+    const order = await this.orderModel.findByIdAndUpdate(id, {
+      isDeleted: true,
+      deletedAt: new Date(),
+    });
+    if (!order) throw new NotFoundException('Order not found');
+  }
+  async overviewOrder() {}
 }

@@ -21,11 +21,11 @@ export class Order {
   @Prop()
   description?: string;
 
-  @Prop({ type: Date })
-  startDate?: Date;
+  @Prop({ type: Boolean, default: false })
+  isDeleted: boolean;
 
   @Prop({ type: Date })
-  endDate?: Date;
+  deletedAt: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
