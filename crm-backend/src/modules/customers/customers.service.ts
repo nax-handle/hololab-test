@@ -7,9 +7,10 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Customer, CustomerDocument } from './schemas/customers.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { PaginateResponse } from 'src/common/dto';
+import { convertToObjectId } from 'src/utils';
 
 @Injectable()
 export class CustomersService {
@@ -74,11 +75,16 @@ export class CustomersService {
       [sortBy]: sortOrder === 'asc' ? 1 : -1,
     };
     if (search) {
-      filter.$or = [
-        { _id: { $regex: search, $options: 'i' } },
-        { name: { $regex: search, $options: 'i' } },
+      const searchConditions: FilterQuery<Customer>[] = [
+        { fullName: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } },
+        { phone: { $regex: search, $options: 'i' } },
+        { companyName: { $regex: search, $options: 'i' } },
       ];
+      if (/^[0-9a-fA-F]{24}$/.test(search)) {
+        searchConditions.push({ _id: convertToObjectId(search) });
+      }
+      filter.$or = searchConditions;
     }
     const [items, total] = await Promise.all([
       this.customerModel.find(filter).sort(sort).skip(skip).limit(limit),

@@ -78,4 +78,9 @@ export class OrdersPaginationQueryDto {
   @ApiPropertyOptional({ example: 'search' })
   @IsOptional()
   search?: string;
+
+  @ApiPropertyOptional({ example: 'sales' })
+  @IsOptional()
+  @IsString()
+  orderType?: string;
 }

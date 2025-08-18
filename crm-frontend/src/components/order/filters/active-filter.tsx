@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import type { OrderFilters } from "@/types/order";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/order";
 
 interface ActiveFiltersProps {
   filters: OrderFilters;
@@ -56,14 +57,10 @@ export function ActiveFilters({
 
   if (filters.amountRange) {
     const { min, max } = filters.amountRange;
-    const rangeText =
-      min && max
-        ? `$${min} - $${max}`
-        : min
-        ? `≥ $${min}`
-        : max
-        ? `≤ $${max}`
-        : "";
+    const rangeText = `${formatCurrency(min ?? 0)} - ${formatCurrency(
+      max ?? 0
+    )}`;
+
     activeFilters.push({
       key: "amountRange" as keyof OrderFilters,
       label: `Amount: ${rangeText}`,

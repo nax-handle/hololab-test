@@ -9,5 +9,4 @@ export enum ORDER_STATUS {
   PROCESSING = 'processing',
   COMPLETED = 'completed',
   CANCELLED = 'cancelled',
-  ACTIVE = 'active',
 }

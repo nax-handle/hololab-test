@@ -61,6 +61,7 @@ export type OrdersQueryParams = {
   page?: number | string;
   limit?: number | string;
   sortBy?: string;
+  orderType?: string;
   sortOrder?: "asc" | "desc";
   search?: string;
   status?: string;

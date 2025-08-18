@@ -2,12 +2,14 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order, OrderDocument } from './schemas/order.schema';
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ORDER_STATUS } from 'src/common/enums';
 import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
 import { convertToObjectId } from 'src/utils';
 import { CustomersService } from '../customers/customers.service';
+import { OrderRepository } from './repositories/order.repository';
+import { PaginateResponse } from 'src/common/dto';
 
 @Injectable()
 export class OrdersService {
@@ -15,6 +17,7 @@ export class OrdersService {
     @InjectModel(Order.name)
     private orderModel: Model<OrderDocument>,
     private customerService: CustomersService,
+    private orderRepository: OrderRepository,
   ) {}
   async create(createOrderDto: CreateOrderDto): Promise<void> {
     const customer = await this.customerService.findUserByEmailOrId(
@@ -27,7 +30,9 @@ export class OrdersService {
     });
   }
 
-  async findAll(query: OrdersPaginationQueryDto) {
+  async findAll(
+    query: OrdersPaginationQueryDto,
+  ): Promise<PaginateResponse<Order>> {
     const {
       page = 1,
       limit = 10,
@@ -40,16 +45,20 @@ export class OrdersService {
       toDate,
       customer,
       search,
+      orderType,
     } = query;
     const skip = (page - 1) * limit;
-    const filter: Record<string, unknown> = { isDeleted: false };
+    const filter: FilterQuery<Order> = { isDeleted: false };
     if (status) filter.status = status;
     if (search) {
-      filter.$or = [
+      const searchConditions: FilterQuery<Order>[] = [
         { customer: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
-        { _id: { $regex: search, $options: 'i' } },
       ];
+      if (/^[0-9a-fA-F]{24}$/.test(search)) {
+        searchConditions.push({ _id: convertToObjectId(search) });
+      }
+      filter.$or = searchConditions;
     }
     if (minTotalAmount != null || maxTotalAmount != null) {
       filter.totalAmount = {
@@ -65,6 +74,9 @@ export class OrdersService {
     }
     if (customer) {
       filter.customer = convertToObjectId(customer);
+    }
+    if (orderType) {
+      filter.orderType = orderType;
     }
     const sort: Record<string, 1 | -1> = {
       [sortBy]: sortOrder === 'asc' ? 1 : -1,
@@ -113,5 +125,7 @@ export class OrdersService {
     });
     if (!order) throw new NotFoundException('Order not found');
   }
-  async overviewOrder() {}
+  async getOrderOverview(fromDate: string, toDate: string) {
+    return this.orderRepository.getOrderOverview(fromDate, toDate);
+  }
 }

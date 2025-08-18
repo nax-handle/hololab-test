@@ -49,7 +49,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
       apiParams.status = filters.status;
     }
     if (filters.orderType) {
-      apiParams.sortBy = filters.orderType;
+      apiParams.orderType = filters.orderType;
     }
     if (filters.customer) {
       apiParams.customer = filters.customer;
