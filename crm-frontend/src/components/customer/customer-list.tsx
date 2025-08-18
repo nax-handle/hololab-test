@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Edit, Trash2, Eye } from "lucide-react";
+import { Search, Edit, Trash2, Eye, Download } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +28,8 @@ import { useGetCustomers } from "@/hooks/use-customer";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EditCustomerModal, DeleteCustomerModal } from "./modal";
 import { useRouter } from "next/navigation";
+import { exportCustomersToExcel } from "@/lib/export-utils";
+import { toast } from "sonner";
 
 interface CustomerListProps {
   limit?: number;
@@ -81,6 +83,26 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
     setSelectedCustomer(updatedCustomer);
   };
 
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    setPage(1);
+  };
+
+  const handleExportExcel = () => {
+    try {
+      if (items.length === 0) {
+        toast.error("No customers to export");
+        return;
+      }
+
+      exportCustomersToExcel(items, "customers-export.xlsx");
+      toast.success(`Exported ${items.length} customers to Excel`);
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export customers");
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -92,7 +114,9 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Customers</CardTitle>
+        <CardTitle className="flex items-center justify-between">
+          <span>Customers</span>
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4 w-full">
@@ -106,6 +130,11 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
                 className="pl-10"
               />
             </div>
+            {searchTerm && (
+              <Button variant="outline" size="sm" onClick={handleClearSearch}>
+                Clear
+              </Button>
+            )}
           </div>
         </div>
         <div className="rounded-md border mt-5">
@@ -195,7 +224,7 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
             </TableBody>
           </Table>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 flex">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -221,6 +250,13 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
               </PaginationItem>
             </PaginationContent>
           </Pagination>
+          <Button
+            onClick={handleExportExcel}
+            disabled={isLoading || items.length === 0}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            Export Excel
+          </Button>
         </div>
 
         <EditCustomerModal
