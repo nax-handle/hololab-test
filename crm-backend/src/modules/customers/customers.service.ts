@@ -52,6 +52,12 @@ export class CustomersService {
     return customer;
   }
 
+  async findUserByEmailOrId(value: string): Promise<CustomerDocument | null> {
+    if (value.includes('@')) {
+      return this.customerModel.findOne({ email: value });
+    }
+    return this.customerModel.findOne({ _id: value });
+  }
   async getCustomers(
     query: PaginationQueryDto,
   ): Promise<PaginateResponse<Customer>> {
@@ -60,12 +66,20 @@ export class CustomersService {
       limit = 10,
       sortBy = 'createdAt',
       sortOrder = 'desc',
+      search,
     } = query;
     const skip = (page - 1) * limit;
-    const filter = { isDeleted: false } as const;
+    const filter: Record<string, unknown> = { isDeleted: false };
     const sort: Record<string, 1 | -1> = {
       [sortBy]: sortOrder === 'asc' ? 1 : -1,
     };
+    if (search) {
+      filter.$or = [
+        { _id: { $regex: search, $options: 'i' } },
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } },
+      ];
+    }
     const [items, total] = await Promise.all([
       this.customerModel.find(filter).sort(sort).skip(skip).limit(limit),
       this.customerModel.countDocuments(filter),

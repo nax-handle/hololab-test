@@ -17,8 +17,14 @@ export class OrdersService {
     private customerService: CustomersService,
   ) {}
   async create(createOrderDto: CreateOrderDto): Promise<void> {
-    await this.customerService.getCustomer(createOrderDto.customer);
-    await this.orderModel.create(createOrderDto);
+    const customer = await this.customerService.findUserByEmailOrId(
+      createOrderDto.customer,
+    );
+    if (!customer) throw new NotFoundException('User not found');
+    await this.orderModel.create({
+      ...createOrderDto,
+      customer: customer._id,
+    });
   }
 
   async findAll(query: OrdersPaginationQueryDto) {
@@ -33,10 +39,18 @@ export class OrdersService {
       fromDate,
       toDate,
       customer,
+      search,
     } = query;
     const skip = (page - 1) * limit;
     const filter: Record<string, unknown> = { isDeleted: false };
     if (status) filter.status = status;
+    if (search) {
+      filter.$or = [
+        { customer: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { _id: { $regex: search, $options: 'i' } },
+      ];
+    }
     if (minTotalAmount != null || maxTotalAmount != null) {
       filter.totalAmount = {
         ...(minTotalAmount != null ? { $gte: minTotalAmount } : {}),
