@@ -33,10 +33,11 @@ import { useGetOrders } from "@/hooks/use-order";
 import { useDebounce } from "@/hooks/use-debounce";
 interface OrderListProps {
   limit?: number;
+  customer?: string;
 }
-export default function OrderList({ limit = 10 }: OrderListProps) {
+export default function OrderList({ limit = 7, customer }: OrderListProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState<OrderFilters>({});
+  const [filters, setFilters] = useState<OrderFilters>({ customer });
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const convertFiltersToApiParams = (
@@ -145,14 +146,13 @@ export default function OrderList({ limit = 10 }: OrderListProps) {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
-            </div>
+            </div>{" "}
+            <OrderFiltersComponent
+              filters={filters}
+              onFiltersChange={handleFiltersChange}
+              onClearFilters={handleClearFilters}
+            />
           </div>
-
-          <OrderFiltersComponent
-            filters={filters}
-            onFiltersChange={handleFiltersChange}
-            onClearFilters={handleClearFilters}
-          />
           <ActiveFilters
             filters={filters}
             onRemoveFilter={handleRemoveFilter}

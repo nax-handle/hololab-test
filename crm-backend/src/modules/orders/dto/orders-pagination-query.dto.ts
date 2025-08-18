@@ -74,4 +74,8 @@ export class OrdersPaginationQueryDto {
   @IsOptional()
   @IsMongoId()
   customer?: string;
+
+  @ApiPropertyOptional({ example: 'search' })
+  @IsOptional()
+  search?: string;
 }

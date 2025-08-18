@@ -8,11 +8,16 @@ import {
 } from "@tanstack/react-query";
 import {
   getCustomers,
+  getCustomer,
   createCustomer,
-  type CustomersQueryParams,
-  type CreateCustomerData,
+  updateCustomer,
+  deleteCustomer,
 } from "@/services/customer.service";
-import type { Customer } from "@/types/customer";
+import type {
+  Customer,
+  CustomersQueryParams,
+  UpdateCustomerData,
+} from "@/types";
 import type { Paginated } from "@/types/paginate";
 import { toast } from "sonner";
 
@@ -32,6 +37,21 @@ export function useGetCustomers(
   });
 }
 
+export function useGetCustomer(id: string): UseQueryResult<Customer, Error> {
+  return useQuery({
+    queryKey: ["customer", id],
+    queryFn: () => getCustomer<Customer>(id),
+    select: (res) => res.data,
+    throwOnError: (error) => {
+      toast.error(error.message);
+      return true;
+    },
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    enabled: !!id,
+  });
+}
+
 export function useCreateCustomer() {
   const queryClient = useQueryClient();
 
@@ -43,6 +63,37 @@ export function useCreateCustomer() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to create customer");
+    },
+  });
+}
+
+export function useUpdateCustomer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateCustomerData }) =>
+      updateCustomer<Customer>(id, data),
+    onSuccess: () => {
+      toast.success("Customer updated successfully");
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to update customer");
+    },
+  });
+}
+
+export function useDeleteCustomer() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteCustomer<Customer>,
+    onSuccess: () => {
+      toast.success("Customer deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["customers"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete customer");
     },
   });
 }

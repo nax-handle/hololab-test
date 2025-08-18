@@ -40,66 +40,59 @@ export function OrderDashboard() {
   };
 
   return (
-    <div className="p-6 container space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="container space-y-6">
+      <div className="flex flex-wrap  items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground ">
             Track and manage all your customer orders
           </p>
         </div>
+        <div className="flex justify-end w-full items-center gap-4">
+          <div className="flex items-center gap-2">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="justify-start text-left font-normal bg-transparent min-w-[240px]"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {quickDateRange?.from ? (
+                    quickDateRange.to ? (
+                      <>
+                        {format(quickDateRange.from, "MMM dd")} -{" "}
+                        {format(quickDateRange.to, "MMM dd, yyyy")}
+                      </>
+                    ) : (
+                      format(quickDateRange.from, "MMM dd, yyyy")
+                    )
+                  ) : (
+                    <span className="text-muted-foreground">
+                      Select date range
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={quickDateRange?.from}
+                  selected={quickDateRange}
+                  onSelect={handleQuickDateRangeChange}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          {quickDateRange?.from && (
+            <Button variant="ghost" size="sm" onClick={clearQuickDateRange}>
+              Clear Date Filter
+            </Button>
+          )}
+        </div>
       </div>
 
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-medium">Filter by date:</span>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="justify-start text-left font-normal bg-transparent min-w-[240px]"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {quickDateRange?.from ? (
-                      quickDateRange.to ? (
-                        <>
-                          {format(quickDateRange.from, "MMM dd")} -{" "}
-                          {format(quickDateRange.to, "MMM dd, yyyy")}
-                        </>
-                      ) : (
-                        format(quickDateRange.from, "MMM dd, yyyy")
-                      )
-                    ) : (
-                      <span className="text-muted-foreground">
-                        Select date range
-                      </span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={quickDateRange?.from}
-                    selected={quickDateRange}
-                    onSelect={handleQuickDateRangeChange}
-                    numberOfMonths={2}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            {quickDateRange?.from && (
-              <Button variant="ghost" size="sm" onClick={clearQuickDateRange}>
-                Clear Date Filter
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

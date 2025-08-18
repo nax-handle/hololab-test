@@ -15,8 +15,11 @@ export interface Customer {
   name: string;
   fullName: string;
   email: string;
-  phone?: string;
-  company?: string;
+  phone: string;
+  companyName: string;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Order {
