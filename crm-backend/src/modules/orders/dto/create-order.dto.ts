@@ -33,12 +33,4 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   description?: string;
-
-  @ApiPropertyOptional({ type: String, format: 'date-time' })
-  @IsOptional()
-  startDate?: Date;
-
-  @ApiPropertyOptional({ type: String, format: 'date-time' })
-  @IsOptional()
-  endDate?: Date;
 }

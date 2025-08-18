@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -17,6 +18,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { ResponseMessage } from 'src/common/decorators';
+import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -24,6 +27,7 @@ export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
+  @ResponseMessage('Order created successfully')
   @ApiOperation({ summary: 'Create order' })
   @ApiBody({ type: CreateOrderDto })
   @ApiResponse({ status: 201, description: 'Order created' })
@@ -32,13 +36,15 @@ export class OrdersController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List orders' })
+  @ResponseMessage('Orders fetched successfully')
+  @ApiOperation({ summary: 'Get orders' })
   @ApiResponse({ status: 200, description: 'List of orders' })
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(@Query() query: OrdersPaginationQueryDto) {
+    return this.ordersService.findAll(query);
   }
 
   @Get(':id')
+  @ResponseMessage('Order fetched successfully')
   @ApiOperation({ summary: 'Get order by id' })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Order found' })
@@ -47,6 +53,7 @@ export class OrdersController {
   }
 
   @Patch(':id')
+  @ResponseMessage('Order updated successfully')
   @ApiOperation({ summary: 'Update order' })
   @ApiParam({ name: 'id', type: String })
   @ApiBody({ type: UpdateOrderDto })
@@ -56,6 +63,7 @@ export class OrdersController {
   }
 
   @Delete(':id')
+  @ResponseMessage('Order deleted successfully')
   @ApiOperation({ summary: 'Delete order' })
   @ApiParam({ name: 'id', type: String })
   @ApiResponse({ status: 200, description: 'Order removed' })

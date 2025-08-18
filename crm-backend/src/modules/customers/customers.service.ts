@@ -44,7 +44,10 @@ export class CustomersService {
   }
 
   async getCustomer(id: string): Promise<CustomerDocument> {
-    const customer = await this.customerModel.findById(id);
+    const customer = await this.customerModel.findOne({
+      _id: id,
+      isDeleted: false,
+    });
     if (!customer) throw new NotFoundException('Customer not found');
     return customer;
   }
