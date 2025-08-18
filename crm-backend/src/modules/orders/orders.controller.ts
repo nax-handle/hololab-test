@@ -9,8 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import {
   ApiBody,
   ApiOperation,
@@ -18,8 +16,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import {
+  QueryOverviewDto,
+  CreateOrderDto,
+  UpdateOrderDto,
+  OrdersPaginationQueryDto,
+} from './dto';
 import { ResponseMessage } from 'src/common/decorators';
-import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -34,7 +37,13 @@ export class OrdersController {
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
   }
-
+  @Get('overview')
+  @ResponseMessage('Order overview fetched successfully')
+  @ApiOperation({ summary: 'Get order overview' })
+  @ApiResponse({ status: 200, description: 'Order overview' })
+  getOrderOverview(@Query() query: QueryOverviewDto) {
+    return this.ordersService.getOrderOverview(query.fromDate, query.toDate);
+  }
   @Get()
   @ResponseMessage('Orders fetched successfully')
   @ApiOperation({ summary: 'Get orders' })

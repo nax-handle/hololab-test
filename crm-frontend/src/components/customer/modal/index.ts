@@ -1,3 +1,2 @@
-export * from "./add-customer-modal";
-export * from "./delete-customer-modal";
-export * from "./edit-customer-modal";
+export { EditCustomerModal } from "./edit-customer-modal";
+export { DeleteCustomerModal } from "./delete-customer-modal";

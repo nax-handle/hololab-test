@@ -1,3 +1,5 @@
+import { Customer } from "./customer";
+
 export enum ORDER_TYPE {
   SALES = "sales",
   SERVICE = "service",
@@ -8,18 +10,7 @@ export enum ORDER_STATUS {
   PENDING = "pending",
   PROCESSING = "processing",
   COMPLETED = "completed",
-}
-
-export interface Customer {
-  _id: string;
-  name: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  companyName: string;
-  address: string;
-  createdAt: string;
-  updatedAt: string;
+  CANCELLED = "cancelled",
 }
 
 export interface Order {
@@ -61,6 +52,7 @@ export type OrdersQueryParams = {
   page?: number | string;
   limit?: number | string;
   sortBy?: string;
+  orderType?: string;
   sortOrder?: "asc" | "desc";
   search?: string;
   status?: string;
