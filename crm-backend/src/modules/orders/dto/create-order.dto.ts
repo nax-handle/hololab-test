@@ -1,19 +1,13 @@
-import {
-  IsEnum,
-  IsMongoId,
-  IsNumber,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { ORDER_STATUS, ORDER_TYPE } from 'src/common/enums';
 
 export class CreateOrderDto {
   @ApiProperty({
-    description: 'Customer id',
+    description: 'Customer id or email',
     example: '60f7e9d3c9b1b12d8c8b4567',
   })
-  @IsMongoId()
+  @IsString()
   customer: string;
 
   @ApiProperty({ enum: ORDER_TYPE, example: ORDER_TYPE.SALES })

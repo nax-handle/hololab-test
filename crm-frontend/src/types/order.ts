@@ -1,0 +1,69 @@
+export enum ORDER_TYPE {
+  SALES = "sales",
+  SERVICE = "service",
+  SUBSCRIPTION = "subscription",
+}
+
+export enum ORDER_STATUS {
+  PENDING = "pending",
+  PROCESSING = "processing",
+  COMPLETED = "completed",
+}
+
+export interface Customer {
+  _id: string;
+  name: string;
+  fullName: string;
+  email: string;
+  phone?: string;
+  company?: string;
+}
+
+export interface Order {
+  _id: string;
+  customer: Customer;
+  orderType: ORDER_TYPE;
+  status: ORDER_STATUS;
+  totalAmount: number;
+  description?: string;
+  startDate?: Date;
+  endDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface OrderFilters {
+  status?: ORDER_STATUS;
+  orderType?: ORDER_TYPE;
+  dateRange?: {
+    start: Date;
+    end: Date;
+  };
+  customer?: string;
+  amountRange?: {
+    min?: number;
+    max?: number;
+  };
+}
+
+export type UpdateOrderData = {
+  customer?: string;
+  orderType?: string;
+  status?: string;
+  totalAmount?: number;
+  description?: string;
+};
+
+export type OrdersQueryParams = {
+  page?: number | string;
+  limit?: number | string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  search?: string;
+  status?: string;
+  minTotalAmount?: number | string;
+  maxTotalAmount?: number | string;
+  fromDate?: string;
+  toDate?: string;
+  customer?: string;
+};

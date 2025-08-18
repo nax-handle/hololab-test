@@ -51,7 +51,12 @@ export class CustomersService {
     if (!customer) throw new NotFoundException('Customer not found');
     return customer;
   }
-
+  async findUserByEmailOrId(value: string): Promise<CustomerDocument | null> {
+    if (value.includes('@')) {
+      return this.customerModel.findOne({ email: value });
+    }
+    return this.customerModel.findOne({ _id: value });
+  }
   async getCustomers(
     query: PaginationQueryDto,
   ): Promise<PaginateResponse<Customer>> {

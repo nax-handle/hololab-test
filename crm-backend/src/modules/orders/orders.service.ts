@@ -17,8 +17,14 @@ export class OrdersService {
     private customerService: CustomersService,
   ) {}
   async create(createOrderDto: CreateOrderDto): Promise<void> {
-    await this.customerService.getCustomer(createOrderDto.customer);
-    await this.orderModel.create(createOrderDto);
+    const customer = await this.customerService.findUserByEmailOrId(
+      createOrderDto.customer,
+    );
+    if (!customer) throw new NotFoundException('User not found');
+    await this.orderModel.create({
+      ...createOrderDto,
+      customer: customer._id,
+    });
   }
 
   async findAll(query: OrdersPaginationQueryDto) {
