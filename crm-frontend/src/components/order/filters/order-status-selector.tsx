@@ -24,14 +24,12 @@ import { Edit3 } from "lucide-react";
 
 interface OrderStatusSelectorProps {
   currentStatus: ORDER_STATUS;
-  orderId: string;
   onStatusChange?: (newStatus: ORDER_STATUS, note?: string) => void;
   disabled?: boolean;
 }
 
 export function OrderStatusSelector({
   currentStatus,
-  orderId,
   onStatusChange,
   disabled = false,
 }: OrderStatusSelectorProps) {
@@ -48,12 +46,7 @@ export function OrderStatusSelector({
       description: "Order received, awaiting confirmation",
     },
     {
-      value: ORDER_STATUS.CONFIRMED,
-      label: "Confirmed",
-      description: "Order confirmed and scheduled",
-    },
-    {
-      value: ORDER_STATUS.IN_PROGRESS,
+      value: ORDER_STATUS.PROCESSING,
       label: "In Progress",
       description: "Work has started",
     },
@@ -66,11 +59,6 @@ export function OrderStatusSelector({
       value: ORDER_STATUS.CANCELLED,
       label: "Cancelled",
       description: "Order cancelled",
-    },
-    {
-      value: ORDER_STATUS.REFUNDED,
-      label: "Refunded",
-      description: "Order refunded",
     },
   ];
 
@@ -94,11 +82,11 @@ export function OrderStatusSelector({
   const getNextLogicalStatus = (current: ORDER_STATUS): ORDER_STATUS | null => {
     switch (current) {
       case ORDER_STATUS.PENDING:
-        return ORDER_STATUS.CONFIRMED;
-      case ORDER_STATUS.CONFIRMED:
-        return ORDER_STATUS.IN_PROGRESS;
-      case ORDER_STATUS.IN_PROGRESS:
+        return ORDER_STATUS.PROCESSING;
+      case ORDER_STATUS.PROCESSING:
         return ORDER_STATUS.COMPLETED;
+      case ORDER_STATUS.COMPLETED:
+        return ORDER_STATUS.CANCELLED;
       default:
         return null;
     }

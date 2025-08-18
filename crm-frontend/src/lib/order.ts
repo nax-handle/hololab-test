@@ -6,10 +6,10 @@ export function getStatusColor(status: ORDER_STATUS): string {
       return "bg-yellow-100 text-yellow-800 border-yellow-200";
     case ORDER_STATUS.COMPLETED:
       return "bg-green-100 text-green-800 border-green-200";
-    case ORDER_STATUS.PROCESSING:
+    case ORDER_STATUS.CANCELLED:
       return "bg-red-100 text-red-800 border-red-200";
     default:
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return "bg-blue-100 text-blue-800 border-blue-200";
   }
 }
 
@@ -40,7 +40,7 @@ export function filterOrders(orders: Order[], filters: OrderFilters): Order[] {
 
     if (
       filters.customer &&
-      !order.customer.name
+      !order.customer.fullName
         .toLowerCase()
         .includes(filters.customer.toLowerCase())
     ) {
@@ -87,13 +87,11 @@ export function getOrderStats(orders: Order[]) {
       case ORDER_STATUS.PENDING:
         stats.pending++;
         break;
-      case ORDER_STATUS.PROCESSING:
-        stats.inProgress++;
-        stats.activeRevenue += order.totalAmount;
+      case ORDER_STATUS.CANCELLED:
+        stats.cancelled++;
         break;
       case ORDER_STATUS.COMPLETED:
         stats.completed++;
-        stats.totalRevenue += order.totalAmount;
         break;
     }
   });

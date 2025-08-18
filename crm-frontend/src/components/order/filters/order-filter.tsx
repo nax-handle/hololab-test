@@ -131,6 +131,15 @@ export function OrderFiltersComponent({
         >
           Completed
         </Button>
+        <Button
+          variant={
+            filters.status === ORDER_STATUS.CANCELLED ? "default" : "outline"
+          }
+          size="sm"
+          onClick={() => updateFilters({ status: ORDER_STATUS.CANCELLED })}
+        >
+          Cancelled
+        </Button>
       </div>
 
       <Separator orientation="vertical" className="h-6" />
@@ -162,7 +171,6 @@ export function OrderFiltersComponent({
               </Button>
             </div>
 
-            {/* Order Type Filter */}
             <div className="space-y-2">
               <Label>Order Type</Label>
               <Select
