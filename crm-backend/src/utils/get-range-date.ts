@@ -1,12 +1,10 @@
-type RangeType = '1d' | '7d' | '1m' | '1y' | 'all';
-
-interface RangeResult {
+export interface RangeResult {
   fromDate: Date;
   toDate: Date;
   values: number;
 }
 
-export function getDateRange(range: RangeType): RangeResult {
+export function getDateRange(range: string): RangeResult {
   const now = new Date();
   let fromDate = new Date();
   let values = 0;
