@@ -37,7 +37,6 @@ export function ViewOrderModal({
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Order ID */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground">
               Order ID
@@ -47,7 +46,6 @@ export function ViewOrderModal({
             </p>
           </div>
 
-          {/* Customer Information */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <User className="h-4 w-4" />
@@ -69,7 +67,6 @@ export function ViewOrderModal({
             </div>
           </div>
 
-          {/* Order Details */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -89,7 +86,6 @@ export function ViewOrderModal({
             </div>
           </div>
 
-          {/* Amount */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <DollarSign className="h-4 w-4" />
@@ -100,7 +96,6 @@ export function ViewOrderModal({
             </p>
           </div>
 
-          {/* Description */}
           {order.description && (
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
@@ -113,7 +108,6 @@ export function ViewOrderModal({
             </div>
           )}
 
-          {/* Dates */}
           <div className="space-y-2">
             <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <Calendar className="h-4 w-4" />

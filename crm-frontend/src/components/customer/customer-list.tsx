@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -113,11 +113,6 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>Customers</span>
-        </CardTitle>
-      </CardHeader>
       <CardContent>
         <div className="space-y-4 w-full">
           <div className="flex items-center space-x-2">

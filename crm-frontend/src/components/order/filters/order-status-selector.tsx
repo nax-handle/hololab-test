@@ -70,7 +70,6 @@ export function OrderStatusSelector({
 
     setIsLoading(true);
 
-    // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     onStatusChange?.(selectedStatus, note);
@@ -161,7 +160,6 @@ export function OrderStatusSelector({
         </Dialog>
       )}
 
-      {/* Quick action for next logical status */}
       {nextStatus && !disabled && (
         <Button
           variant="ghost"

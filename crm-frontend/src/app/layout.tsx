@@ -34,15 +34,15 @@ export default function RootLayout({
         <ReactQueryProvider>
           <SidebarProvider defaultOpen>
             <AppSidebar />
-            <SidebarInset>
+
+            <SidebarInset className="min-w-0">
               <AppHeader />
-              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-                <div className="min-h-[100vh] flex-1 rounded-xl  md:min-h-min p-4">
-                  {children}
-                </div>
+              <div className="min-w-0  flex flex-1 flex-col gap-4 p-4 pt-16">
+                <main className="min-w-0 rounded-xl p-4">{children}</main>
               </div>
             </SidebarInset>
           </SidebarProvider>
+
           <Toaster
             position="top-right"
             richColors
