@@ -27,10 +27,9 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN || github.token }}
 
       - uses: docker/build-push-action@v6
-        working-directory: crm-backend  
         with:
-          context: .
-          file: ./crm-backend/Dockerfile
+          context: ./crm-backend
+          file: Dockerfile
           push: true
           tags: ${{ env.IMAGE }}
           platforms: linux/amd64
