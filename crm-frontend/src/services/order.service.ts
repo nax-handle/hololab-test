@@ -1,10 +1,14 @@
 import {
   ApiResponse,
+  ChartParams,
+  ChartResponse,
+  OrderOverview,
+  OrdersOverviewParams,
   OrdersQueryParams,
   Paginated,
   UpdateOrderData,
 } from "@/types";
-import axiosInstance from "./http";
+import axiosInstance from "./axios";
 
 export async function getOrders<T>(
   params?: OrdersQueryParams
@@ -51,24 +55,21 @@ export async function bulkDeleteOrders(
   return data.data;
 }
 
-export type OrdersOverviewParams = {
-  fromDate: string;
-  toDate: string;
-};
-
-export interface OrderOverview {
-  totalOrders: number;
-  totalRevenue: number;
-  inProgressCount: number;
-  completedCount: number;
-  completedAmount: number;
-}
-
 export async function getOrdersOverview(
   params: OrdersOverviewParams
 ): Promise<ApiResponse<OrderOverview[]>> {
   const data = await axiosInstance.get<ApiResponse<OrderOverview[]>>(
     "/orders/overview",
+    { params }
+  );
+  return data.data;
+}
+
+export async function getOrderChart(
+  params: ChartParams
+): Promise<ApiResponse<ChartResponse>> {
+  const data = await axiosInstance.get<ApiResponse<ChartResponse>>(
+    "/orders/chart",
     { params }
   );
   return data.data;

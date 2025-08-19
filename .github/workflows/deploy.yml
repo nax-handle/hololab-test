@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'crm-backend/**' 
+      - "crm-backend/**"
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:latest
@@ -28,8 +28,8 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          context: ./crm-backend
-          file: Dockerfile
+          context: ${{ github.workspace }}/crm-backend
+          file: ${{ github.workspace }}/crm-backend/Dockerfile
           push: true
           tags: ${{ env.IMAGE }}
           platforms: linux/amd64

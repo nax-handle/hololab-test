@@ -13,13 +13,20 @@ import {
   deleteOrder,
   bulkDeleteOrders,
   getOrdersOverview,
-  type OrdersOverviewParams,
+  getOrderChart,
 } from "@/services/order.service";
-import type { Order, OrdersQueryParams, UpdateOrderData } from "@/types/order";
-import type { Paginated } from "@/types/paginate";
+import type {
+  Order,
+  OrdersOverviewParams,
+  OrdersQueryParams,
+  UpdateOrderData,
+  Paginated,
+  ApiResponse,
+  OrderOverview,
+  ChartResponse,
+  ChartParams,
+} from "@/types";
 import { toast } from "sonner";
-import type { ApiResponse } from "@/types/api";
-import type { OrderOverview } from "@/services/order.service";
 
 export function useGetOrders(
   params: OrdersQueryParams
@@ -112,5 +119,21 @@ export function useBulkDeleteOrders() {
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete orders");
     },
+  });
+}
+
+export function useGetOrderChart(
+  params: ChartParams
+): UseQueryResult<ChartResponse, Error> {
+  return useQuery({
+    queryKey: ["orders-chart", params],
+    queryFn: () => getOrderChart(params),
+    select: (res: ApiResponse<ChartResponse>) => res.data,
+    throwOnError: (error) => {
+      toast.error(error.message);
+      return true;
+    },
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
   });
 }
