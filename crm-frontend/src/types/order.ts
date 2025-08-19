@@ -62,3 +62,36 @@ export type OrdersQueryParams = {
   toDate?: string;
   customer?: string;
 };
+
+export type OrdersOverviewParams = {
+  fromDate: string;
+  toDate: string;
+};
+
+export interface OrderOverview {
+  totalOrders: number;
+  totalRevenue: number;
+  inProgressCount: number;
+  completedCount: number;
+  completedAmount: number;
+}
+
+export type ChartRange = "1d" | "7d" | "1m" | "1y" | "all";
+
+export interface ChartParams {
+  range: ChartRange;
+  fromDate?: string;
+  toDate?: string;
+}
+
+export interface ChartDataPoint {
+  bucket: number;
+  revenue: number;
+}
+
+export interface ChartResponse {
+  data: Array<{
+    result: ChartDataPoint[];
+  }>;
+  range: string;
+}

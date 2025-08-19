@@ -1,4 +1,10 @@
-import { type Order, ORDER_STATUS, type OrderFilters } from "../types/order";
+import {
+  ChartDataPoint,
+  ChartRange,
+  type Order,
+  ORDER_STATUS,
+  type OrderFilters,
+} from "../types";
 
 export function getStatusColor(status: ORDER_STATUS): string {
   switch (status) {
@@ -97,4 +103,85 @@ export function getOrderStats(orders: Order[]) {
   });
 
   return stats;
+}
+
+export interface ChartData {
+  time: string;
+  revenue: number;
+}
+
+export function mapChartData(
+  chartData: ChartDataPoint[],
+  range: ChartRange,
+  fromDate?: string
+): ChartData[] {
+  const timeLabels = getLabelsForRange(range, fromDate);
+
+  return chartData.map((point, index) => ({
+    time: timeLabels[point.bucket] || timeLabels[index] || `${point.bucket}`,
+    revenue: point.revenue,
+  }));
+}
+
+function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
+  const baseDate = fromDate ? new Date(fromDate) : new Date();
+
+  switch (range) {
+    case "1d": {
+      return ["0:00", "4:00", "8:00", "12:00", "16:00", "20:00"];
+    }
+    case "7d": {
+      const dayNames = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+      ];
+      const startIndex = (baseDate.getDay() + 6) % 7;
+      return Array.from(
+        { length: 7 },
+        (_, i) => dayNames[(startIndex + i) % 7]
+      );
+    }
+    case "1m": {
+      const year = baseDate.getFullYear();
+      const month = baseDate.getMonth();
+      const startDay = baseDate.getDate();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const labels: string[] = [];
+      for (let i = 0; i < daysInMonth; i++) {
+        const day = ((startDay - 1 + i) % daysInMonth) + 1;
+        labels.push(String(day));
+      }
+      return labels;
+    }
+    case "1y": {
+      const monthNames = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const startMonth = baseDate.getMonth();
+      return Array.from(
+        { length: 12 },
+        (_, i) => monthNames[(startMonth + i) % 12]
+      );
+    }
+    case "all":
+      return [];
+    default:
+      return [];
+  }
 }

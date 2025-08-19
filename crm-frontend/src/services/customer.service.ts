@@ -4,7 +4,7 @@ import {
   UpdateCustomerData,
   CustomersQueryParams,
 } from "@/types";
-import http from "./http";
+import http from "./axios";
 
 export async function getCustomers<T>(
   params?: CustomersQueryParams
