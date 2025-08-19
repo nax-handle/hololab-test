@@ -12,12 +12,11 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  const corsOptions = {
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  };
-  app.enableCors(corsOptions);
+  const allowedOrigins =
+    process.env.NODE_ENV === 'development'
+      ? ['http://localhost:3000']
+      : ['https://hololab.interview.io.vn'];
+  app.enableCors(allowedOrigins);
   SwaggerModule.setup('api', app, documentFactory);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor(app.get(Reflector)));
