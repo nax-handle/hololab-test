@@ -64,6 +64,7 @@ export function OrderFiltersComponent({
       });
     } else {
       const { dateRange: _, ...filtersWithoutDate } = filters;
+      console.log(_);
       onFiltersChange(filtersWithoutDate);
     }
   };
@@ -95,7 +96,7 @@ export function OrderFiltersComponent({
   const activeFilterCount = getActiveFilterCount();
 
   return (
-    <div className="flex max-md:mt-2 ml-auto flex-wrap items-center gap-2">
+    <div className="flex max-lg:mt-2 ml-auto flex-wrap items-center gap-2">
       <div className="flex flex-wrap items-center gap-1">
         <Button
           variant={!filters.status ? "default" : "outline"}
@@ -144,7 +145,6 @@ export function OrderFiltersComponent({
 
       <Separator orientation="vertical" className="h-6" />
 
-      {/* Advanced Filters */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button

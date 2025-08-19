@@ -94,9 +94,7 @@ export function OrderDetailsModal({
         </DialogHeader>
 
         <div className="grid gap-6 md:grid-cols-2">
-          {/* Left Column */}
           <div className="space-y-6">
-            {/* Customer Information */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -112,10 +110,10 @@ export function OrderDetailsModal({
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">{order.customer.name}</p>
-                    {order.customer.company && (
+                    <p className="font-medium">{order.customer.fullName}</p>
+                    {order.customer.companyName && (
                       <p className="text-sm text-muted-foreground">
-                        {order.customer.company}
+                        {order.customer.companyName}
                       </p>
                     )}
                   </div>
@@ -132,10 +130,10 @@ export function OrderDetailsModal({
                       <span>{order.customer.phone}</span>
                     </div>
                   )}
-                  {order.customer.company && (
+                  {order.customer.companyName && (
                     <div className="flex items-center gap-2 text-sm">
                       <Building className="w-4 h-4 text-muted-foreground" />
-                      <span>{order.customer.company}</span>
+                      <span>{order.customer.companyName}</span>
                     </div>
                   )}
                 </div>
@@ -240,7 +238,6 @@ export function OrderDetailsModal({
               </CardContent>
             </Card>
 
-            {/* Status Management */}
             <Card>
               <CardHeader>
                 <CardTitle>Status Management</CardTitle>
@@ -248,23 +245,19 @@ export function OrderDetailsModal({
               <CardContent>
                 <OrderStatusSelector
                   currentStatus={order.status}
-                  orderId={order._id}
                   onStatusChange={handleStatusChange}
                 />
               </CardContent>
             </Card>
           </div>
 
-          {/* Right Column */}
           <div className="space-y-6">
-            {/* Order Timeline */}
             <OrderStatusTimeline
               currentStatus={order.status}
               createdAt={order.createdAt}
               updatedAt={order.updatedAt}
             />
 
-            {/* Order Metadata */}
             <Card>
               <CardHeader>
                 <CardTitle>Order Metadata</CardTitle>
@@ -306,7 +299,6 @@ export function OrderDetailsModal({
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
             <Card>
               <CardHeader>
                 <CardTitle>Quick Actions</CardTitle>

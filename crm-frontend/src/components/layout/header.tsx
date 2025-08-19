@@ -8,7 +8,7 @@ export function AppHeader() {
   const { toggleSidebar, isMobile, open } = useSidebar();
 
   return (
-    <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
+    <header className="flex fixed w-full h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
       <div className="flex items-center gap-2">
         {isMobile ? (
           <Button

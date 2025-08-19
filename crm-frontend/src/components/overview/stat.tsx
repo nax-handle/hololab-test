@@ -6,7 +6,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, X } from "lucide-react";
 import { format } from "date-fns";
 import type { DateRange } from "react-day-picker";
 import { useMemo, useState } from "react";
@@ -42,7 +42,7 @@ export default function Stat() {
   return (
     <div className="space-y-4">
       <div className="flex justify-end w-full items-center gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center ">
           <Popover>
             <PopoverTrigger asChild>
               <Button
@@ -80,7 +80,7 @@ export default function Stat() {
         </div>
         {quickDateRange?.from && (
           <Button variant="ghost" size="sm" onClick={clearQuickDateRange}>
-            Clear Date Filter
+            <X />
           </Button>
         )}
       </div>

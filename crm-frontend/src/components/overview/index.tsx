@@ -1,18 +1,10 @@
 "use client";
 
-// import { mockOrders } from "@/lib/mock-data";
-// import type { Order } from "@/lib/types";
-
-// import { OrderFiltersComponent } from "./order-filters";
-// import { OrderDetailsModal } from "./order-details-modal";
 import { RevenueChart } from "./revenue-chart";
 import OrderList from "@/components/order/order-list";
 import Stat from "./stat";
-// import { TopCustomers } from "./top-customers";
 
 export function OrderDashboard() {
-  // const [orders, setOrders] = useState<Order[]>(mockOrders);
-
   return (
     <div className=" space-y-6">
       <div className="flex   items-center justify-between">
@@ -28,8 +20,6 @@ export function OrderDashboard() {
       <RevenueChart />
 
       <div className=""></div>
-      <div>{/* <TopCustomers /> */}</div>
-
       <OrderList></OrderList>
     </div>
   );

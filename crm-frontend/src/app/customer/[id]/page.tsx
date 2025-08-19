@@ -1,13 +1,10 @@
 import CustomerDetail from "@/components/customer/customer-detail";
 
-interface CustomerDetailPageProps {
-  params: {
-    id: string;
-  };
-}
-
-export default function CustomerDetailPage({
+export default async function CustomerDetailPage({
   params,
-}: CustomerDetailPageProps) {
-  return <CustomerDetail customerId={params.id} />;
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <CustomerDetail customerId={id} />;
 }

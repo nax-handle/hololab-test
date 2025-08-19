@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -204,11 +204,6 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>Orders</span>
-        </CardTitle>
-      </CardHeader>
       <CardContent>
         <div className="space-y-4 w-full">
           <div className="flex flex-wrap  items-center space-x-2">
@@ -245,8 +240,8 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
             )}
           </div>
         </div>
-        <div className="rounded-md border mt-5 overflow-x-auto">
-          <Table className="w-full min-w-[1000px]">
+        <div className="w-full overflow-x-auto">
+          <Table className="w-full ">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-fit">

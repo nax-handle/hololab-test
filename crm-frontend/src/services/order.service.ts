@@ -51,7 +51,6 @@ export async function bulkDeleteOrders(
   return data.data;
 }
 
-// Overview
 export type OrdersOverviewParams = {
   fromDate: string;
   toDate: string;
