@@ -3,6 +3,8 @@ name: Deploy
 on:
   push:
     branches: [main]
+  paths:
+      - 'crm-backend/**' 
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:latest
