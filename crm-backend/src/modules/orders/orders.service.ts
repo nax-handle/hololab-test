@@ -6,11 +6,11 @@ import {
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order, OrderDocument } from './schemas/order.schema';
-import { FilterQuery, Model, PipelineStage } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ORDER_STATUS } from 'src/common/enums';
 import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
-import { convertToObjectId } from 'src/utils';
+import { convertToObjectId, getDateRange } from 'src/utils';
 import { CustomersService } from '../customers/customers.service';
 import { OrderRepository } from './repositories/order.repository';
 import { PaginateResponse } from 'src/common/dto';
@@ -152,11 +152,7 @@ export class OrdersService {
     return this.orderRepository.getOrderOverview(fromDate, toDate);
   }
   async getOrderChart(range: string) {
-    // const pipelineALL = this.orderRepository.buildRevenueSeriesPipeline({
-    //   range: '1Y',
-    //   fromDate: startY,
-    //   toDate: endY,
-    // });
-    // return seriesALL;
+    const data = getDateRange(range);
+    return { data: await this.orderRepository.getChartData(data), range };
   }
 }

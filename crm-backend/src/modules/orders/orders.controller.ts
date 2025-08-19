@@ -13,6 +13,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -48,6 +49,7 @@ export class OrdersController {
   @ResponseMessage('Order chart fetched successfully')
   @ApiOperation({ summary: 'Get order chart' })
   @ApiResponse({ status: 200, description: 'Order chart' })
+  @ApiQuery({ name: 'range', type: String })
   getOrderChart(@Query() query: { range: string }) {
     return this.ordersService.getOrderChart(query.range);
   }
