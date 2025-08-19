@@ -165,7 +165,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-4 w-full">
-          <div className="flex items-center space-x-2">
+          <div className="flex flex-wrap  items-center space-x-2">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <Input
@@ -197,16 +197,16 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
             onClearAll={handleClearFilters}
           />
         </div>
-        <div className="rounded-md border mt-5">
-          <Table>
+        <div className="rounded-md border mt-5 overflow-auto">
+          <Table className="min-w-full">
             <TableHeader>
               <TableRow>
-                <TableHead>Order ID</TableHead>
+                <TableHead className="hidden sm:table-cell">Order ID</TableHead>
                 <TableHead>Customer</TableHead>
-                <TableHead>Type</TableHead>
+                <TableHead className="hidden md:table-cell">Type</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Amount</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead className="hidden lg:table-cell">Date</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -229,7 +229,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
               ) : (
                 items.map((order) => (
                   <TableRow key={order._id}>
-                    <TableCell className="font-medium">
+                    <TableCell className="font-medium hidden sm:table-cell">
                       <span className="font-mono text-xs">{order._id}</span>
                     </TableCell>
                     <TableCell>
@@ -240,9 +240,13 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                         <div className="text-sm text-muted-foreground">
                           {order.customer.email}
                         </div>
+                        <div className="sm:hidden text-xs text-muted-foreground mt-1">
+                          {order.orderType} •{" "}
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden md:table-cell">
                       <Badge variant="outline">{order.orderType}</Badge>
                     </TableCell>
                     <TableCell>
@@ -253,7 +257,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                     <TableCell className="font-medium">
                       {formatCurrency(order.totalAmount)}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="hidden lg:table-cell">
                       {new Date(order.createdAt).toLocaleDateString()}
                     </TableCell>
                     <TableCell className="text-right">

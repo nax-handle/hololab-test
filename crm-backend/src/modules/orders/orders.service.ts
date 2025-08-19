@@ -103,7 +103,7 @@ export class OrdersService {
 
   async findOne(id: string): Promise<Order> {
     const order = await this.orderModel
-      .findOne({ _id: id, isDeleted: false })
+      .findOne({ _id: convertToObjectId(id), isDeleted: false })
       .populate('customer');
     if (!order) throw new NotFoundException('Order not found');
     return order;
@@ -127,5 +127,8 @@ export class OrdersService {
   }
   async getOrderOverview(fromDate: string, toDate: string) {
     return this.orderRepository.getOrderOverview(fromDate, toDate);
+  }
+  async getOrderChart(range: string) {
+    // return this.orderRepository.getOrderChart(range);
   }
 }

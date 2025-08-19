@@ -11,10 +11,14 @@ import {
   createOrder,
   updateOrder,
   deleteOrder,
+  getOrdersOverview,
+  type OrdersOverviewParams,
 } from "@/services/order.service";
 import type { Order, OrdersQueryParams, UpdateOrderData } from "@/types/order";
 import type { Paginated } from "@/types/paginate";
 import { toast } from "sonner";
+import type { ApiResponse } from "@/types/api";
+import type { OrderOverview } from "@/services/order.service";
 
 export function useGetOrders(
   params: OrdersQueryParams
@@ -23,6 +27,23 @@ export function useGetOrders(
     queryKey: ["orders", params],
     queryFn: () => getOrders<Order>(params),
     select: (res) => res.data,
+    throwOnError: (error) => {
+      toast.error(error.message);
+      return true;
+    },
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetOrdersOverview(
+  params: OrdersOverviewParams | undefined
+): UseQueryResult<OrderOverview[], Error> {
+  return useQuery({
+    queryKey: ["orders-overview", params],
+    queryFn: () => getOrdersOverview(params as OrdersOverviewParams),
+    enabled: Boolean(params?.fromDate && params?.toDate),
+    select: (res: ApiResponse<OrderOverview[]>) => res.data,
     throwOnError: (error) => {
       toast.error(error.message);
       return true;

@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Plus } from "lucide-react";
 import { useCreateOrder } from "@/hooks/use-order";
-import { ORDER_STATUS, ORDER_TYPE } from "@/types/order";
+import { ORDER_TYPE } from "@/types/order";
 
 interface AddOrderModalProps {
   onOrderCreated?: () => void;
@@ -47,25 +47,21 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
       return;
     }
 
-    try {
-      await createOrderMutation.mutateAsync({
-        customer: formData.customer,
-        orderType: formData.orderType,
-        totalAmount: parseFloat(formData.totalAmount),
-        description: formData.description,
-      });
+    await createOrderMutation.mutateAsync({
+      customer: formData.customer,
+      orderType: formData.orderType,
+      totalAmount: parseFloat(formData.totalAmount),
+      description: formData.description,
+    });
 
-      setFormData({
-        customer: "",
-        orderType: "",
-        totalAmount: "",
-        description: "",
-      });
-      setOpen(false);
-      onOrderCreated?.();
-    } catch (error) {
-      // Error is handled by the mutation
-    }
+    setFormData({
+      customer: "",
+      orderType: "",
+      totalAmount: "",
+      description: "",
+    });
+    setOpen(false);
+    onOrderCreated?.();
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -107,7 +103,7 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
               required
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select order type" /> 
+                <SelectValue placeholder="Select order type" />
               </SelectTrigger>
               <SelectContent>
                 {Object.values(ORDER_TYPE).map((type) => (

@@ -40,3 +40,27 @@ export async function deleteOrder<T>(id: string): Promise<ApiResponse<T>> {
   const data = await axiosInstance.delete<ApiResponse<T>>(`/orders/${id}`);
   return data.data;
 }
+
+// Overview
+export type OrdersOverviewParams = {
+  fromDate: string;
+  toDate: string;
+};
+
+export interface OrderOverview {
+  totalOrders: number;
+  totalRevenue: number;
+  inProgressCount: number;
+  completedCount: number;
+  completedAmount: number;
+}
+
+export async function getOrdersOverview(
+  params: OrdersOverviewParams
+): Promise<ApiResponse<OrderOverview[]>> {
+  const data = await axiosInstance.get<ApiResponse<OrderOverview[]>>(
+    "/orders/overview",
+    { params }
+  );
+  return data.data;
+}

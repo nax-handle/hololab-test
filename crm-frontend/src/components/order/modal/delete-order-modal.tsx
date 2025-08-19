@@ -31,13 +31,9 @@ export function DeleteOrderModal({
   const handleDelete = async () => {
     if (!order) return;
 
-    try {
-      await deleteOrderMutation.mutateAsync(order._id);
-      onClose();
-      onOrderDeleted?.();
-    } catch (error) {
-      // Error is handled by the mutation
-    }
+    await deleteOrderMutation.mutateAsync(order._id);
+    onClose();
+    onOrderDeleted?.();
   };
 
   if (!order) return null;

@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/components/providers/react-query-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout";
 import { Toaster } from "sonner";
 
@@ -29,19 +33,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased relative overflow-hidden`}
+        style={{} as React.CSSProperties}
       >
         <ReactQueryProvider>
-          <SidebarProvider>
+          <SidebarProvider defaultOpen>
             <AppSidebar />
-            <Toaster
-              position="top-right"
-              richColors
-              theme="light"
-              duration={3000}
-            />
-            <div className="p-4 w-full">{children}</div>
+            <SidebarInset className="h-full peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4)-var(--header-height))]">
+              <SidebarTrigger className="absolute top-0 right-0" />
+              <div className="p-4 w-full">{children}</div>
+            </SidebarInset>
           </SidebarProvider>
+          <Toaster
+            position="top-right"
+            richColors
+            theme="light"
+            duration={3000}
+          />
         </ReactQueryProvider>
       </body>
     </html>

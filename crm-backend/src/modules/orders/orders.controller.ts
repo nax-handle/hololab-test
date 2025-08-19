@@ -44,6 +44,13 @@ export class OrdersController {
   getOrderOverview(@Query() query: QueryOverviewDto) {
     return this.ordersService.getOrderOverview(query.fromDate, query.toDate);
   }
+  @Get('chart')
+  @ResponseMessage('Order chart fetched successfully')
+  @ApiOperation({ summary: 'Get order chart' })
+  @ApiResponse({ status: 200, description: 'Order chart' })
+  getOrderChart(@Query() query: { range: string }) {
+    return this.ordersService.getOrderChart(query.range);
+  }
   @Get()
   @ResponseMessage('Orders fetched successfully')
   @ApiOperation({ summary: 'Get orders' })

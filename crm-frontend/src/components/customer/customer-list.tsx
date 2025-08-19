@@ -138,7 +138,7 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
           </div>
         </div>
         <div className="rounded-md border mt-5">
-          <Table>
+          <Table className="min-w-full">
             <TableHeader>
               <TableRow>
                 <TableHead>Customer ID</TableHead>
