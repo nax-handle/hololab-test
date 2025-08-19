@@ -1,14 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { ORDER_STATUS } from "@/types/order";
 import { getStatusColor } from "@/lib/order";
-import {
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
-  RefreshCw,
-  Package,
-} from "lucide-react";
+import { Clock, CheckCircle, XCircle, Package } from "lucide-react";
 
 interface OrderStatusBadgeProps {
   status: ORDER_STATUS;
@@ -28,16 +21,12 @@ export function OrderStatusBadge({
     switch (status) {
       case ORDER_STATUS.PENDING:
         return <Clock className={iconSize} />;
-      case ORDER_STATUS.CONFIRMED:
+      case ORDER_STATUS.PROCESSING:
         return <CheckCircle className={iconSize} />;
-      case ORDER_STATUS.IN_PROGRESS:
-        return <RefreshCw className={iconSize} />;
       case ORDER_STATUS.COMPLETED:
         return <Package className={iconSize} />;
       case ORDER_STATUS.CANCELLED:
         return <XCircle className={iconSize} />;
-      case ORDER_STATUS.REFUNDED:
-        return <AlertCircle className={iconSize} />;
       default:
         return null;
     }

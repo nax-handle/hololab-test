@@ -19,15 +19,12 @@ interface OrderStatusTimelineProps {
 
 export function OrderStatusTimeline({
   currentStatus,
-  statusHistory = [],
   createdAt,
   updatedAt,
 }: OrderStatusTimelineProps) {
-  // Default timeline based on typical order flow
   const defaultTimeline: { status: ORDER_STATUS; label: string }[] = [
     { status: ORDER_STATUS.PENDING, label: "Order Received" },
-    { status: ORDER_STATUS.CONFIRMED, label: "Order Confirmed" },
-    { status: ORDER_STATUS.IN_PROGRESS, label: "Work Started" },
+    { status: ORDER_STATUS.PROCESSING, label: "Order Processing" },
     { status: ORDER_STATUS.COMPLETED, label: "Order Completed" },
   ];
 
@@ -36,8 +33,6 @@ export function OrderStatusTimeline({
   };
 
   const currentIndex = getStatusIndex(currentStatus);
-  const isCancelled = currentStatus === ORDER_STATUS.CANCELLED;
-  const isRefunded = currentStatus === ORDER_STATUS.REFUNDED;
 
   return (
     <Card>
@@ -47,11 +42,8 @@ export function OrderStatusTimeline({
       <CardContent>
         <div className="space-y-4">
           {defaultTimeline.map((item, index) => {
-            const isCompleted =
-              index <= currentIndex && !isCancelled && !isRefunded;
-            const isCurrent =
-              index === currentIndex && !isCancelled && !isRefunded;
-            const isSkipped = isCancelled || isRefunded;
+            const isCompleted = index <= currentIndex;
+            const isCurrent = index === currentIndex;
 
             return (
               <div key={item.status} className="flex items-start space-x-3">
@@ -100,9 +92,7 @@ export function OrderStatusTimeline({
               </div>
             );
           })}
-
-          {/* Show cancelled/refunded status if applicable */}
-          {(isCancelled || isRefunded) && (
+          {currentStatus === ORDER_STATUS.CANCELLED && (
             <div className="flex items-start space-x-3 pt-2 border-t">
               <div className="flex flex-col items-center">
                 <XCircle className="w-5 h-5 text-red-600" />
@@ -110,7 +100,7 @@ export function OrderStatusTimeline({
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium text-red-900">
-                    {isCancelled ? "Order Cancelled" : "Order Refunded"}
+                    Order Cancelled
                   </p>
                   <span className="text-xs text-gray-500">
                     {formatDate(updatedAt)}

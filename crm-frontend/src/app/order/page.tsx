@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 export default function OrderPage() {
   return (
-    <div className="w-full">
+    <div>
       <OrderManagement></OrderManagement>
     </div>
   );

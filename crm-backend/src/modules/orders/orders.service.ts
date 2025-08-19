@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order, OrderDocument } from './schemas/order.schema';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, PipelineStage } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ORDER_STATUS } from 'src/common/enums';
 import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
@@ -103,7 +107,7 @@ export class OrdersService {
 
   async findOne(id: string): Promise<Order> {
     const order = await this.orderModel
-      .findOne({ _id: id, isDeleted: false })
+      .findOne({ _id: convertToObjectId(id), isDeleted: false })
       .populate('customer');
     if (!order) throw new NotFoundException('Order not found');
     return order;
@@ -125,7 +129,34 @@ export class OrdersService {
     });
     if (!order) throw new NotFoundException('Order not found');
   }
+
+  async bulkDelete(orderIds: string[]): Promise<{ deletedCount: number }> {
+    if (!orderIds || orderIds.length === 0) {
+      throw new BadRequestException('Order IDs array cannot be empty');
+    }
+
+    const result = await this.orderModel.updateMany(
+      {
+        _id: { $in: orderIds },
+        isDeleted: false,
+      },
+      {
+        isDeleted: true,
+        deletedAt: new Date(),
+      },
+    );
+
+    return { deletedCount: result.modifiedCount };
+  }
   async getOrderOverview(fromDate: string, toDate: string) {
     return this.orderRepository.getOrderOverview(fromDate, toDate);
+  }
+  async getOrderChart(range: string) {
+    // const pipelineALL = this.orderRepository.buildRevenueSeriesPipeline({
+    //   range: '1Y',
+    //   fromDate: startY,
+    //   toDate: endY,
+    // });
+    // return seriesALL;
   }
 }

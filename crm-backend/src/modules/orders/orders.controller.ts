@@ -44,6 +44,13 @@ export class OrdersController {
   getOrderOverview(@Query() query: QueryOverviewDto) {
     return this.ordersService.getOrderOverview(query.fromDate, query.toDate);
   }
+  @Get('chart')
+  @ResponseMessage('Order chart fetched successfully')
+  @ApiOperation({ summary: 'Get order chart' })
+  @ApiResponse({ status: 200, description: 'Order chart' })
+  getOrderChart(@Query() query: { range: string }) {
+    return this.ordersService.getOrderChart(query.range);
+  }
   @Get()
   @ResponseMessage('Orders fetched successfully')
   @ApiOperation({ summary: 'Get orders' })
@@ -78,5 +85,13 @@ export class OrdersController {
   @ApiResponse({ status: 200, description: 'Order removed' })
   remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
+  }
+
+  @Post('bulk-delete')
+  @ResponseMessage('Orders deleted successfully')
+  @ApiOperation({ summary: 'Bulk delete orders' })
+  @ApiResponse({ status: 200, description: 'Orders bulk deleted' })
+  bulkDelete(@Body() body: { orderIds: string[] }) {
+    return this.ordersService.bulkDelete(body.orderIds);
   }
 }

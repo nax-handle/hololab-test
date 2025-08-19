@@ -95,7 +95,7 @@ export function OrderStatusSelector({
   const nextStatus = getNextLogicalStatus(currentStatus);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex flex-wrap items-center gap-2">
       <OrderStatusBadge status={currentStatus} showIcon size="md" />
 
       {!disabled && (

@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReactQueryProvider } from "@/components/providers/react-query-provider";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/layout";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AppSidebar, AppHeader } from "@/components/layout";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -32,16 +32,23 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReactQueryProvider>
-          <SidebarProvider>
+          <SidebarProvider defaultOpen>
             <AppSidebar />
-            <Toaster
-              position="top-right"
-              richColors
-              theme="light"
-              duration={3000}
-            />
-            <div className="p-4 w-full">{children}</div>
+            <SidebarInset>
+              <AppHeader />
+              <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+                <div className="min-h-[100vh] flex-1 rounded-xl  md:min-h-min p-4">
+                  {children}
+                </div>
+              </div>
+            </SidebarInset>
           </SidebarProvider>
+          <Toaster
+            position="top-right"
+            richColors
+            theme="light"
+            duration={3000}
+          />
         </ReactQueryProvider>
       </body>
     </html>

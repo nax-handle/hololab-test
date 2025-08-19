@@ -18,7 +18,6 @@ import {
 } from "@/components/ui/chart";
 import { formatCurrency } from "@/lib/order";
 
-// Mock revenue data for different time periods
 const generateRevenueData = (period: string) => {
   const baseData = {
     "1D": [
@@ -66,8 +65,9 @@ const generateRevenueData = (period: string) => {
       { time: "2024", revenue: 5800000 },
       { time: "2025", revenue: 6500000 },
     ],
-  };
-  return baseData["7D"];
+  } as const;
+  const selected = baseData[period as keyof typeof baseData] ?? baseData["1D"];
+  return [...selected];
 };
 
 const timePeriods = [
@@ -134,7 +134,7 @@ export function RevenueChart() {
               color: "hsl(142, 76%, 36%)",
             },
           }}
-          className="h-[300px]"
+          className="h-[300px] w-full"
         >
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
@@ -152,7 +152,7 @@ export function RevenueChart() {
                 className="text-xs"
                 axisLine={false}
                 tickLine={false}
-                tickFormatter={(value) => formatCurrency(value, true)}
+                tickFormatter={(value) => formatCurrency(Number(value))}
               />
               <ChartTooltip
                 content={<ChartTooltipContent />}
