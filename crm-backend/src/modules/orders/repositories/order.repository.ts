@@ -125,14 +125,12 @@ export class OrderRepository {
           },
         },
       },
-
       {
         $group: {
           _id: '$bucket',
           totalProfit: { $sum: '$totalAmount' },
         },
       },
-
       {
         $facet: {
           buckets: [
