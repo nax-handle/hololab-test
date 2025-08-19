@@ -10,7 +10,6 @@ export function getDateRange(range: RangeType): RangeResult {
   const now = new Date();
   let fromDate = new Date();
   let values = 0;
-
   switch (range) {
     case '1d':
       fromDate.setDate(now.getDate() - 1);
@@ -37,6 +36,5 @@ export function getDateRange(range: RangeType): RangeResult {
       values = 5;
       break;
   }
-
   return { fromDate, toDate: now, values };
 }
