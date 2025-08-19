@@ -41,6 +41,16 @@ export async function deleteOrder<T>(id: string): Promise<ApiResponse<T>> {
   return data.data;
 }
 
+export async function bulkDeleteOrders(
+  orderIds: string[]
+): Promise<ApiResponse<{ deletedCount: number }>> {
+  const data = await axiosInstance.post<ApiResponse<{ deletedCount: number }>>(
+    "/orders/bulk-delete",
+    { orderIds }
+  );
+  return data.data;
+}
+
 // Overview
 export type OrdersOverviewParams = {
   fromDate: string;

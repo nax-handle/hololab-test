@@ -86,4 +86,12 @@ export class OrdersController {
   remove(@Param('id') id: string) {
     return this.ordersService.remove(id);
   }
+
+  @Post('bulk-delete')
+  @ResponseMessage('Orders deleted successfully')
+  @ApiOperation({ summary: 'Bulk delete orders' })
+  @ApiResponse({ status: 200, description: 'Orders bulk deleted' })
+  bulkDelete(@Body() body: { orderIds: string[] }) {
+    return this.ordersService.bulkDelete(body.orderIds);
+  }
 }

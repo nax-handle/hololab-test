@@ -25,7 +25,6 @@ export function OrderDashboard() {
       </div>
 
       <Stat />
-      {/* Revenue Chart and Top Customers Section */}
       <RevenueChart />
 
       <div className=""></div>

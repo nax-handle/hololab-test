@@ -138,7 +138,7 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
           </div>
         </div>
         <div className="rounded-md border mt-5">
-          <Table className="min-w-full">
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Customer ID</TableHead>
@@ -254,8 +254,8 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
             onClick={handleExportExcel}
             disabled={isLoading || items.length === 0}
           >
-            <Download className="h-4 w-4 mr-2" />
-            Export Excel
+            <Download className="h-4 w-4 mr-2 " />
+            <span className="max-sm:hidden">Export Excel</span>
           </Button>
         </div>
 

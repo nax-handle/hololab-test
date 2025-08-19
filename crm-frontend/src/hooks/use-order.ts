@@ -11,6 +11,7 @@ import {
   createOrder,
   updateOrder,
   deleteOrder,
+  bulkDeleteOrders,
   getOrdersOverview,
   type OrdersOverviewParams,
 } from "@/services/order.service";
@@ -95,6 +96,21 @@ export function useDeleteOrder() {
     },
     onError: (error: Error) => {
       toast.error(error.message || "Failed to delete order");
+    },
+  });
+}
+
+export function useBulkDeleteOrders() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: bulkDeleteOrders,
+    onSuccess: (data) => {
+      toast.success(`${data.data.deletedCount} orders deleted successfully`);
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || "Failed to delete orders");
     },
   });
 }
