@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches: [main]
-  paths:
+    paths:
       - 'crm-backend/**' 
 
 env:
