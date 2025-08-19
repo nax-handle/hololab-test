@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'crm-backend/**'
+      - 'crm-backend/**' 
 
 env:
   IMAGE: ghcr.io/${{ github.repository }}:latest
@@ -20,13 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Debug paths
-        run: |
-          pwd
-          ls -la
-          ls -la crm-backend || true
-          test -f ./crm-backend/Dockerfile && echo "Found backend Dockerfile"
-
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -34,9 +27,10 @@ jobs:
           password: ${{ secrets.GHCR_TOKEN || github.token }}
 
       - uses: docker/build-push-action@v6
+        working-directory: crm-backend  
         with:
-          context: ${{ github.workspace }}/crm-backend
-          file: ${{ github.workspace }}/crm-backend/Dockerfile
+          context: .
+          file: ./crm-backend/Dockerfile
           push: true
           tags: ${{ env.IMAGE }}
           platforms: linux/amd64
