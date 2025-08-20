@@ -28,7 +28,7 @@ import { useGetCustomers } from "@/hooks/use-customer";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EditCustomerModal, DeleteCustomerModal } from "./modal";
 import { useRouter } from "next/navigation";
-import { exportCustomersToExcel } from "@/lib/export-utils";
+import { exportCustomersToExcel, formatTimeZone } from "@/lib";
 import { toast } from "sonner";
 
 interface CustomerListProps {
@@ -187,7 +187,7 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
                     <TableCell>
                       <Badge variant="default">Active</Badge>
                     </TableCell>
-                    <TableCell>{formatDate(customer.createdAt)}</TableCell>
+                    <TableCell>{formatTimeZone(customer.createdAt)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
                         <Button

@@ -6,7 +6,7 @@ export interface Customer {
   companyName: string;
   address: string;
   isDeleted: boolean;
-  createdAt: string;
+  createdAt: Date;
   updatedAt: string;
   __v: number;
 }

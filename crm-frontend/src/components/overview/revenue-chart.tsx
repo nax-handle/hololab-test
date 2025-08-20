@@ -18,57 +18,7 @@ import {
 } from "@/components/ui/chart";
 import { formatCurrency, mapChartData } from "@/lib/order";
 import { useGetOrderChart } from "@/hooks/use-order";
-import {
-  format,
-  subDays,
-  startOfDay,
-  endOfDay,
-  startOfWeek,
-  startOfYear,
-  startOfMonth,
-  endOfWeek,
-  endOfMonth,
-  endOfYear,
-} from "date-fns";
 import { ChartRange } from "@/types";
-
-function getDateRangeForPeriod(period: ChartRange) {
-  const now = new Date();
-  const today = startOfDay(now);
-
-  switch (period) {
-    case "1d":
-      return {
-        fromDate: format(today, "yyyy-MM-dd"),
-        toDate: format(endOfDay(now), "yyyy-MM-dd"),
-      };
-    case "7d":
-      return {
-        fromDate: format(startOfWeek(now, { weekStartsOn: 1 }), "yyyy-MM-dd"),
-        toDate: format(endOfWeek(now, { weekStartsOn: 1 }), "yyyy-MM-dd"),
-      };
-    case "1m":
-      return {
-        fromDate: format(startOfMonth(now), "yyyy-MM-dd"),
-        toDate: format(endOfMonth(now), "yyyy-MM-dd"),
-      };
-    case "1y":
-      return {
-        fromDate: format(startOfYear(now), "yyyy-MM-dd"),
-        toDate: format(endOfYear(now), "yyyy-MM-dd"),
-      };
-    case "all":
-      return {
-        fromDate: undefined,
-        toDate: undefined,
-      };
-    default:
-      return {
-        fromDate: format(subDays(today, 6), "yyyy-MM-dd"),
-        toDate: format(endOfDay(now), "yyyy-MM-dd"),
-      };
-  }
-}
 
 const timePeriods = [
   { label: "1D", value: "1d" as ChartRange },
@@ -80,11 +30,6 @@ const timePeriods = [
 
 export function RevenueChart() {
   const [selectedPeriod, setSelectedPeriod] = useState<ChartRange>("7d");
-
-  // const dateRange = useMemo(
-  //   () => getDateRangeForPeriod(selectedPeriod),
-  //   [selectedPeriod]
-  // );
 
   const {
     data: chartResponse,
@@ -114,7 +59,7 @@ export function RevenueChart() {
 
     return mapChartData(rawData, selectedPeriod);
   }, [chartResponse, selectedPeriod]);
-
+  console.log(data);
   const currentRevenue = data[data.length - 1]?.revenue || 0;
   const previousRevenue = data[data.length - 2]?.revenue || 0;
   const growth =
