@@ -298,8 +298,8 @@ Access order management at `/order`:
 Pending ────┐
 │           ▼
 │       Processing ────┐
-│           │         ▼
-└───────────┴──► Completed
+│           │          ▼
+└───────────|      Completed
             │
             ▼
         Cancelled
@@ -348,39 +348,3 @@ Pending ────┐
 2. **View History**: Check customer's order history
 3. **Order Management**: Update order status or add new orders
 4. **Communication**: Use order descriptions for notes and updates
-
-### 🔧 Tips and Best Practices
-
-#### Performance Optimization
-
-- Use specific date ranges instead of "All" for better performance
-- Apply filters before exporting large datasets
-- Use search terms of 3+ characters for optimal results
-
-#### Data Management
-
-- Soft deletion preserves data integrity - deleted items can be recovered
-- Regular exports provide data backups
-- Use descriptive order descriptions for better tracking
-
-#### User Experience
-
-- Bookmark frequently used filter combinations
-- Use bulk operations for efficiency when managing multiple orders
-- Monitor dashboard regularly for business insights
-
-### 🚨 Important Notes
-
-- **Data Validation**: All forms include real-time validation with helpful error messages
-- **Error Handling**: User-friendly error messages with suggested actions
-- **Auto-save**: Modal forms reset automatically to prevent data loss
-- **Responsive**: All features work seamlessly across desktop, tablet, and mobile devices
-
-### 📱 Mobile Usage
-
-The application is fully responsive and optimized for mobile devices:
-
-- Swipe-friendly table navigation
-- Collapsible sidebar for more screen space
-- Touch-optimized buttons and inputs
-- Simplified layouts for small screens

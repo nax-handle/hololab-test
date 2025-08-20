@@ -10,8 +10,17 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Order } from "@/types/order";
-import { getStatusColor, formatCurrency, formatDate } from "@/lib/order";
-import { Calendar, User, DollarSign, FileText, Tag } from "lucide-react";
+import { getStatusColor, formatCurrency } from "@/lib/order";
+import {
+  Calendar,
+  User,
+  DollarSign,
+  FileText,
+  Tag,
+  ExternalLink,
+} from "lucide-react";
+import { formatTimeZone } from "@/lib";
+import Link from "next/link";
 
 interface ViewOrderModalProps {
   order: Order | null;
@@ -50,6 +59,9 @@ export function ViewOrderModal({
             <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
               <User className="h-4 w-4" />
               Customer Information
+              <Link href={`/customer/${order.customer._id}`}>
+                <ExternalLink className="h-4 w-4" />
+              </Link>
             </h3>
             <div className="space-y-1">
               <p className="text-sm">
@@ -119,7 +131,7 @@ export function ViewOrderModal({
                   <strong>Created:</strong>
                 </p>
                 <p className="text-muted-foreground">
-                  {formatDate(new Date(order.createdAt))}
+                  {formatTimeZone(order.createdAt)}
                 </p>
               </div>
               <div>
@@ -127,29 +139,9 @@ export function ViewOrderModal({
                   <strong>Updated:</strong>
                 </p>
                 <p className="text-muted-foreground">
-                  {formatDate(new Date(order.updatedAt))}
+                  {formatTimeZone(order.updatedAt)}
                 </p>
               </div>
-              {order.startDate && (
-                <div>
-                  <p>
-                    <strong>Start Date:</strong>
-                  </p>
-                  <p className="text-muted-foreground">
-                    {formatDate(new Date(order.startDate))}
-                  </p>
-                </div>
-              )}
-              {order.endDate && (
-                <div>
-                  <p>
-                    <strong>End Date:</strong>
-                  </p>
-                  <p className="text-muted-foreground">
-                    {formatDate(new Date(order.endDate))}
-                  </p>
-                </div>
-              )}
             </div>
           </div>
         </div>

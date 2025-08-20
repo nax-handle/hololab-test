@@ -17,6 +17,7 @@ import {
   Calendar,
 } from "lucide-react";
 import OrderList from "../order/order-list";
+import { formatTimeZone } from "@/lib";
 
 interface CustomerDetailProps {
   customerId: string;
@@ -51,14 +52,6 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
       </div>
     );
   }
-
-  const formatCustomerDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
 
   return (
     <div className="space-y-6">
@@ -127,9 +120,7 @@ export default function CustomerDetail({ customerId }: CustomerDetailProps) {
                 <Calendar className="h-4 w-4" />
                 Member Since
               </h3>
-              <p className="text-sm">
-                {formatCustomerDate(customer.createdAt)}
-              </p>
+              <p className="text-sm">{formatTimeZone(customer.createdAt)}</p>
             </div>
             <div className="space-y-2">
               <h3 className="text-sm font-medium text-muted-foreground">
