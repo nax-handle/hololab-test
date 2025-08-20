@@ -14,6 +14,7 @@ import {
   deleteCustomer,
 } from "@/services/customer.service";
 import type {
+  ApiError,
   Customer,
   CustomersQueryParams,
   UpdateCustomerData,
@@ -61,8 +62,8 @@ export function useCreateCustomer() {
       toast.success("Customer created successfully");
       queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to create customer");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message);
     },
   });
 }
@@ -77,8 +78,8 @@ export function useUpdateCustomer() {
       toast.success("Customer updated successfully");
       queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to update customer");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message);
     },
   });
 }
@@ -92,8 +93,8 @@ export function useDeleteCustomer() {
       toast.success("Customer deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["customers"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete customer");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message);
     },
   });
 }

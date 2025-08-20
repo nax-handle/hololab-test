@@ -55,9 +55,9 @@ export class CustomersService {
 
   async findUserByEmailOrId(value: string): Promise<CustomerDocument | null> {
     if (value.includes('@')) {
-      return this.customerModel.findOne({ email: value });
+      return this.customerModel.findOne({ email: value, isDeleted: false });
     }
-    return this.customerModel.findOne({ _id: value });
+    return this.customerModel.findOne({ _id: value, isDeleted: false });
   }
   async getCustomers(
     query: PaginationQueryDto,

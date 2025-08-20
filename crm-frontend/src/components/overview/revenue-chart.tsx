@@ -44,18 +44,18 @@ function getDateRangeForPeriod(period: ChartRange) {
       };
     case "7d":
       return {
-        fromDate: format(startOfWeek(now, { weekStartsOn: 1 }), "yyyy-MM-dd"), // Start from Monday
-        toDate: format(endOfWeek(now, { weekStartsOn: 1 }), "yyyy-MM-dd"), // End on Sunday
+        fromDate: format(startOfWeek(now, { weekStartsOn: 1 }), "yyyy-MM-dd"),
+        toDate: format(endOfWeek(now, { weekStartsOn: 1 }), "yyyy-MM-dd"),
       };
     case "1m":
       return {
-        fromDate: format(startOfMonth(now), "yyyy-MM-dd"), // Start from 1st of current month
-        toDate: format(endOfMonth(now), "yyyy-MM-dd"), // End on last day of current month
+        fromDate: format(startOfMonth(now), "yyyy-MM-dd"),
+        toDate: format(endOfMonth(now), "yyyy-MM-dd"),
       };
     case "1y":
       return {
-        fromDate: format(startOfYear(now), "yyyy-MM-dd"), // Start from January 1st
-        toDate: format(endOfYear(now), "yyyy-MM-dd"), // End on December 31st
+        fromDate: format(startOfYear(now), "yyyy-MM-dd"),
+        toDate: format(endOfYear(now), "yyyy-MM-dd"),
       };
     case "all":
       return {
@@ -81,10 +81,10 @@ const timePeriods = [
 export function RevenueChart() {
   const [selectedPeriod, setSelectedPeriod] = useState<ChartRange>("7d");
 
-  const dateRange = useMemo(
-    () => getDateRangeForPeriod(selectedPeriod),
-    [selectedPeriod]
-  );
+  // const dateRange = useMemo(
+  //   () => getDateRangeForPeriod(selectedPeriod),
+  //   [selectedPeriod]
+  // );
 
   const {
     data: chartResponse,
@@ -92,8 +92,6 @@ export function RevenueChart() {
     error,
   } = useGetOrderChart({
     range: selectedPeriod,
-    fromDate: dateRange.fromDate,
-    toDate: dateRange.toDate,
   });
 
   const data = useMemo(() => {

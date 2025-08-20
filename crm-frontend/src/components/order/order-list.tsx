@@ -66,7 +66,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
       apiParams.status = filters.status;
     }
     if (filters.orderType) {
-      apiParams.sortBy = filters.orderType;
+      apiParams.orderType = filters.orderType;
     }
     if (filters.customer) {
       apiParams.customer = filters.customer;
@@ -362,7 +362,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
             </TableBody>
           </Table>
         </div>
-        <div className="mt-4 flex">
+        <div className="mt-4 flex max-md:flex-wrap">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -392,6 +392,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
           <Button
             onClick={handleExportExcel}
             disabled={isLoading || items.length === 0}
+            className="ml-auto mt-2"
           >
             <Download className="h-4 w-4 mr-2" />
             Export Excel

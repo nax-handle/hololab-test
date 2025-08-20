@@ -219,7 +219,7 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
             </TableBody>
           </Table>
         </div>
-        <div className="mt-4 flex">
+        <div className="mt-4 flex max-md:flex-wrap">
           <Pagination>
             <PaginationContent>
               <PaginationItem>
@@ -248,9 +248,10 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
           <Button
             onClick={handleExportExcel}
             disabled={isLoading || items.length === 0}
+            className="ml-auto mt-2"
           >
-            <Download className="h-4 w-4 mr-2 " />
-            <span className="max-sm:hidden">Export Excel</span>
+            <Download className="h-4 w-4 mr-2" />
+            Export Excel
           </Button>
         </div>
 
