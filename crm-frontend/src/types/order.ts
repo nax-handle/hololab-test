@@ -41,11 +41,7 @@ export interface OrderFilters {
 }
 
 export type UpdateOrderData = {
-  customer?: string;
-  orderType?: string;
-  status?: string;
-  totalAmount?: number;
-  description?: string;
+  status: string;
 };
 
 export type OrdersQueryParams = {

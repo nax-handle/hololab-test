@@ -4,7 +4,6 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order, OrderDocument } from './schemas/order.schema';
 import { FilterQuery, Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
@@ -113,21 +112,49 @@ export class OrdersService {
     return order;
   }
 
-  async update(id: string, updateOrderDto: UpdateOrderDto): Promise<void> {
-    const order = await this.orderModel.findByIdAndUpdate(id, updateOrderDto);
+  async updateStatus(id: string, next: ORDER_STATUS) {
+    const order = await this.orderModel.findById(id);
     if (!order) throw new NotFoundException('Order not found');
-  }
-  async updateStatus(id: string, status: ORDER_STATUS) {
-    const order = await this.orderModel.findByIdAndUpdate(id, { status });
-    if (!order) throw new NotFoundException('Order not found');
-    return order;
+    if (order.status === next)
+      throw new BadRequestException('Status unchanged');
+    if (
+      order.status === ORDER_STATUS.COMPLETED ||
+      order.status === ORDER_STATUS.CANCELLED
+    )
+      throw new BadRequestException(
+        `Order already ${order.status}, cannot change`,
+      );
+    const allowed: Record<ORDER_STATUS, ORDER_STATUS[]> = {
+      [ORDER_STATUS.PENDING]: [ORDER_STATUS.PROCESSING, ORDER_STATUS.CANCELLED],
+      [ORDER_STATUS.PROCESSING]: [
+        ORDER_STATUS.COMPLETED,
+        ORDER_STATUS.CANCELLED,
+      ],
+      [ORDER_STATUS.COMPLETED]: [],
+      [ORDER_STATUS.CANCELLED]: [],
+    };
+    if (!allowed[order.status].includes(next))
+      throw new BadRequestException(
+        `Invalid transition ${order.status} -> ${next}`,
+      );
+
+    const update: Partial<Order> = { status: next };
+    if (next === ORDER_STATUS.COMPLETED) update.completedAt = new Date();
+
+    await this.orderModel.updateOne({ _id: id }, update);
+    return { id, status: next };
   }
   async remove(id: string): Promise<void> {
-    const order = await this.orderModel.findByIdAndUpdate(id, {
-      isDeleted: true,
-      deletedAt: new Date(),
+    const order = await this.orderModel.findById(id, {
+      isDeleted: false,
     });
     if (!order) throw new NotFoundException('Order not found');
+
+    if (order.status === ORDER_STATUS.PENDING) {
+      await order.updateOne({ isDeleted: true });
+      return;
+    }
+    throw new BadRequestException(`Cannot delete ${order.status} order`);
   }
 
   async bulkDelete(orderIds: string[]): Promise<{ deletedCount: number }> {

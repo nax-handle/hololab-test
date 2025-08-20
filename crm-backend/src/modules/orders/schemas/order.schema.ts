@@ -26,6 +26,9 @@ export class Order {
 
   @Prop({ type: Date })
   deletedAt: Date;
+
+  @Prop({ type: Date })
+  completedAt?: Date;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);

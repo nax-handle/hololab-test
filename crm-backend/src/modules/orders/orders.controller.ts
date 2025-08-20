@@ -20,10 +20,10 @@ import {
 import {
   QueryOverviewDto,
   CreateOrderDto,
-  UpdateOrderDto,
   OrdersPaginationQueryDto,
 } from './dto';
 import { ResponseMessage } from 'src/common/decorators';
+import { ORDER_STATUS } from 'src/common/enums';
 
 @ApiTags('Orders')
 @Controller('orders')
@@ -70,14 +70,21 @@ export class OrdersController {
     return this.ordersService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(':id/status')
   @ResponseMessage('Order updated successfully')
   @ApiOperation({ summary: 'Update order' })
   @ApiParam({ name: 'id', type: String })
-  @ApiBody({ type: UpdateOrderDto })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        status: { type: 'string', example: ORDER_STATUS.PENDING },
+      },
+    },
+  })
   @ApiResponse({ status: 200, description: 'Order updated' })
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(id, updateOrderDto);
+  update(@Param('id') id: string, @Body() body: { status: ORDER_STATUS }) {
+    return this.ordersService.updateStatus(id, body.status);
   }
 
   @Delete(':id')
