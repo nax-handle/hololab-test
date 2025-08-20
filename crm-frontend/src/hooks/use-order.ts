@@ -117,8 +117,8 @@ export function useBulkDeleteOrders() {
       toast.success(`${data.data.deletedCount} orders deleted successfully`);
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete orders");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message || "Failed to delete orders");
     },
   });
 }

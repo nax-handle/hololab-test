@@ -161,7 +161,15 @@ export class OrdersService {
     if (!orderIds || orderIds.length === 0) {
       throw new BadRequestException('Order IDs array cannot be empty');
     }
-
+    const orders = await this.orderModel.find({
+      _id: { $in: orderIds },
+      isDeleted: false,
+    });
+    if (orders.some((order) => order.status !== ORDER_STATUS.PENDING)) {
+      throw new BadRequestException(
+        'Cannot delete orders that are not pending',
+      );
+    }
     const result = await this.orderModel.updateMany(
       {
         _id: { $in: orderIds },
