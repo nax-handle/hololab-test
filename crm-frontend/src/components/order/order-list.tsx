@@ -241,7 +241,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
             )}
           </div>
         </div>
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto border rounded-md">
           <Table className="w-full ">
             <TableHeader>
               <TableRow>

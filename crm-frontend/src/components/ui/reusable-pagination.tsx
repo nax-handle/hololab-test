@@ -10,6 +10,25 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
+/**
+ * A reusable pagination component with smart page number display.
+ *
+ * Features:
+ * - Smart pagination with ellipsis for large page counts
+ * - Configurable maximum visible pages
+ * - Automatic hiding when there's only one page
+ * - Disabled state for previous/next buttons at boundaries
+ *
+ * @example
+ * ```tsx
+ * <ReusablePagination
+ *   currentPage={page}
+ *   totalPages={totalPages}
+ *   onPageChange={setPage}
+ *   maxVisiblePages={5}
+ * />
+ * ```
+ */
 interface ReusablePaginationProps {
   currentPage: number;
   totalPages: number;
@@ -53,7 +72,8 @@ export function ReusablePagination({
 
   const visiblePages = getVisiblePages();
   const showStartEllipsis = showEllipsis && visiblePages[0] > 1;
-  const showEndEllipsis = showEllipsis && visiblePages[visiblePages.length - 1] < totalPages;
+  const showEndEllipsis =
+    showEllipsis && visiblePages[visiblePages.length - 1] < totalPages;
 
   const handlePrevious = () => {
     if (currentPage > 1) {
@@ -73,7 +93,11 @@ export function ReusablePagination({
         <PaginationItem>
           <PaginationPrevious
             onClick={handlePrevious}
-            className={currentPage <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            className={
+              currentPage <= 1
+                ? "pointer-events-none opacity-50"
+                : "cursor-pointer"
+            }
           />
         </PaginationItem>
 
@@ -127,7 +151,11 @@ export function ReusablePagination({
         <PaginationItem>
           <PaginationNext
             onClick={handleNext}
-            className={currentPage >= totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+            className={
+              currentPage >= totalPages
+                ? "pointer-events-none opacity-50"
+                : "cursor-pointer"
+            }
           />
         </PaginationItem>
       </PaginationContent>

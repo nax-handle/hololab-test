@@ -15,15 +15,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Customer, CustomersQueryParams } from "@/types/customer";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { ReusablePagination } from "@/components/ui/reusable-pagination";
 import { useGetCustomers } from "@/hooks/use-customer";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EditCustomerModal, DeleteCustomerModal } from "./modal";
@@ -220,31 +212,11 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
           </Table>
         </div>
         <div className="mt-4 flex max-md:flex-wrap">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }).map((_, idx) => (
-                <PaginationItem key={idx}>
-                  <PaginationLink
-                    isActive={page === idx + 1}
-                    onClick={() => setPage(idx + 1)}
-                  >
-                    {idx + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              {totalPages > 5 && <PaginationEllipsis />}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <ReusablePagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
           <Button
             onClick={handleExportExcel}
             disabled={isLoading || items.length === 0}

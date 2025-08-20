@@ -140,22 +140,22 @@ function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
         "Saturday",
         "Sunday",
       ];
-      const startIndex = (vnTime.day() + 6) % 7;
+      const startIndex = (vnTime.day() + 7) % 7;
       return Array.from(
         { length: 7 },
         (_, i) => dayNames[(startIndex + i) % 7]
       );
     }
     case "1m": {
-      const year = vnTime.year();
-      const month = vnTime.month();
       const startDay = vnTime.date();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      console.log(startDay);
+      const daysInMonth = vnTime.daysInMonth();
       const labels: string[] = [];
       for (let i = 0; i < daysInMonth; i++) {
-        const day = ((startDay - 1 + i) % daysInMonth) + 1;
+        const day = ((startDay + i) % daysInMonth) + 1;
         labels.push(String(day));
       }
+      console.log("label 1m", labels);
       return labels;
     }
     case "1y": {
