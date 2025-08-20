@@ -54,6 +54,6 @@ jobs:
             docker run -d --name crm-server \
               --env-file /opt/crm/.env \
               --network app-net \
-              -p 8888:8888 \
+              -p 2222:2222 \
               ${{ env.IMAGE }}
             docker image prune -f
