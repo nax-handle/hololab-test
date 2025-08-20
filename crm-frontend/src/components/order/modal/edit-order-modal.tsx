@@ -87,7 +87,10 @@ export function EditOrderModal({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Update Order Status</DialogTitle>
-          <DialogDescription></DialogDescription>
+          <DialogDescription>
+            Only can update follow this flow: Pending -&gt; Processing -&gt;
+            Completed
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
