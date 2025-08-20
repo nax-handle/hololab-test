@@ -100,6 +100,14 @@ export class OrdersController {
   @ResponseMessage('Orders deleted successfully')
   @ApiOperation({ summary: 'Bulk delete orders' })
   @ApiResponse({ status: 200, description: 'Orders bulk deleted' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        orderIds: { type: 'array', items: { type: 'string' } },
+      },
+    },
+  })
   bulkDelete(@Body() body: { orderIds: string[] }) {
     return this.ordersService.bulkDelete(body.orderIds);
   }
