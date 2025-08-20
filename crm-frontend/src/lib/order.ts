@@ -5,7 +5,7 @@ import {
   ORDER_STATUS,
   type OrderFilters,
 } from "../types";
-
+import moment from "moment-timezone";
 export function getStatusColor(status: ORDER_STATUS): string {
   switch (status) {
     case ORDER_STATUS.PENDING:
@@ -124,11 +124,11 @@ export function mapChartData(
 }
 
 function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
-  const baseDate = fromDate ? new Date(fromDate) : new Date();
+  const vnTime = moment(fromDate).tz("Asia/Ho_Chi_Minh");
 
   switch (range) {
     case "1d": {
-      return ["0:00", "4:00", "8:00", "12:00", "16:00", "20:00"];
+      return ["0:00", "4:00", "8:00", "12:00", "16:00", "20:00", "24:00"];
     }
     case "7d": {
       const dayNames = [
@@ -140,22 +140,22 @@ function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
         "Saturday",
         "Sunday",
       ];
-      const startIndex = (baseDate.getDay() + 6) % 7;
+      const startIndex = (vnTime.day() + 7) % 7;
       return Array.from(
         { length: 7 },
         (_, i) => dayNames[(startIndex + i) % 7]
       );
     }
     case "1m": {
-      const year = baseDate.getFullYear();
-      const month = baseDate.getMonth();
-      const startDay = baseDate.getDate();
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const startDay = vnTime.date();
+      console.log(startDay);
+      const daysInMonth = vnTime.daysInMonth();
       const labels: string[] = [];
       for (let i = 0; i < daysInMonth; i++) {
-        const day = ((startDay - 1 + i) % daysInMonth) + 1;
+        const day = ((startDay + i) % daysInMonth) + 1;
         labels.push(String(day));
       }
+      console.log("label 1m", labels);
       return labels;
     }
     case "1y": {
@@ -173,7 +173,7 @@ function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
         "Nov",
         "Dec",
       ];
-      const startMonth = baseDate.getMonth();
+      const startMonth = vnTime.month();
       return Array.from(
         { length: 12 },
         (_, i) => monthNames[(startMonth + i) % 12]

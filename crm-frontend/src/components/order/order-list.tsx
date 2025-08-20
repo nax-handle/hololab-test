@@ -14,7 +14,12 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { OrderFiltersComponent } from "./filters/order-filter";
 import { ActiveFilters } from "./filters/active-filter";
-import { getStatusColor, formatCurrency } from "@/lib/order";
+import {
+  getStatusColor,
+  formatCurrency,
+  formatTimeZone,
+  exportOrdersToExcel,
+} from "@/lib";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,18 +36,9 @@ import {
   OrderFilters,
   OrdersQueryParams,
 } from "@/types/order";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { ReusablePagination } from "@/components/ui/paginate/reusable-pagination";
 import { useGetOrders } from "@/hooks/use-order";
 import { useDebounce } from "@/hooks/use-debounce";
-import { exportOrdersToExcel } from "@/lib/export-utils";
 import { toast } from "sonner";
 
 interface OrderListProps {
@@ -245,7 +241,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
             )}
           </div>
         </div>
-        <div className="w-full overflow-x-auto">
+        <div className="w-full overflow-x-auto border rounded-md">
           <Table className="w-full ">
             <TableHeader>
               <TableRow>
@@ -307,8 +303,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                           {order.customer.email}
                         </div>
                         <div className="sm:hidden text-xs text-muted-foreground mt-1">
-                          {order.orderType} •{" "}
-                          {new Date(order.createdAt).toLocaleDateString()}
+                          {order.orderType} • {formatTimeZone(order.createdAt)}
                         </div>
                       </div>
                     </TableCell>
@@ -324,7 +319,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                       {formatCurrency(order.totalAmount)}
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">
-                      {new Date(order.createdAt).toLocaleDateString()}
+                      {formatTimeZone(order.createdAt)}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
@@ -342,7 +337,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                             size="sm"
                             onClick={() => handleEditOrder(order)}
                           >
-                            <ArrowUpDown className="w-4 h-4" />
+                            <ArrowUpDown className="w-4 h-4 text-blue-500" />
                           </Button>
                         )}
                         {order.status === ORDER_STATUS.PENDING && (
@@ -363,31 +358,11 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
           </Table>
         </div>
         <div className="mt-4 flex max-md:flex-wrap">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }).map((_, idx) => (
-                <PaginationItem key={idx}>
-                  <PaginationLink
-                    isActive={page === idx + 1}
-                    onClick={() => setPage(idx + 1)}
-                  >
-                    {idx + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              {totalPages > 5 && <PaginationEllipsis />}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <ReusablePagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
 
           <Button
             onClick={handleExportExcel}

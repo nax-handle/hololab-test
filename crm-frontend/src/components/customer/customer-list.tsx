@@ -15,20 +15,12 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Customer, CustomersQueryParams } from "@/types/customer";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+import { ReusablePagination } from "@/components/ui/paginate/reusable-pagination";
 import { useGetCustomers } from "@/hooks/use-customer";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EditCustomerModal, DeleteCustomerModal } from "./modal";
 import { useRouter } from "next/navigation";
-import { exportCustomersToExcel } from "@/lib/export-utils";
+import { exportCustomersToExcel, formatTimeZone } from "@/lib";
 import { toast } from "sonner";
 
 interface CustomerListProps {
@@ -187,7 +179,7 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
                     <TableCell>
                       <Badge variant="default">Active</Badge>
                     </TableCell>
-                    <TableCell>{formatDate(customer.createdAt)}</TableCell>
+                    <TableCell>{formatTimeZone(customer.createdAt)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1">
                         <Button
@@ -220,31 +212,11 @@ export default function CustomerList({ limit = 10 }: CustomerListProps) {
           </Table>
         </div>
         <div className="mt-4 flex max-md:flex-wrap">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
-                />
-              </PaginationItem>
-              {Array.from({ length: totalPages }).map((_, idx) => (
-                <PaginationItem key={idx}>
-                  <PaginationLink
-                    isActive={page === idx + 1}
-                    onClick={() => setPage(idx + 1)}
-                  >
-                    {idx + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              {totalPages > 5 && <PaginationEllipsis />}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <ReusablePagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+          />
           <Button
             onClick={handleExportExcel}
             disabled={isLoading || items.length === 0}

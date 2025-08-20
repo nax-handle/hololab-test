@@ -11,7 +11,7 @@ A modern Customer Relationship Management (CRM) system built with NestJS backend
 - [Docker Setup](#-docker-setup)
 - [Environment Variables](#-environment-variables)
 - [API Documentation](#-api-documentation)
-- [Usage](#-usage)
+- [Demo](#-demo)
 
 ### Key Capabilities
 
@@ -224,3 +224,163 @@ NEXT_PUBLIC_API_URL=http://localhost:8888
 Once the backend is running, you can access the interactive Swagger documentation at:
 
 **URL**: `http://localhost:8888/api`
+
+## 📖 Demo
+
+### Getting Started
+
+You can access the CRM application at `https://hololab.interview.io.vn/overview`. The application features a clean, intuitive interface with the following main sections:
+
+### 🏠 Dashboard Overview
+
+Navigate to `/overview` to access the main dashboard:
+
+- **Statistics Cards**: View key metrics including total orders, revenue, in-progress orders, and completed orders
+- **Revenue Chart**: Interactive chart with multiple time periods (1D, 7D, 1M, 1Y, All)
+- **Date Range Filter**: Select custom date ranges to analyze specific periods
+- **Recent Orders**: Quick view of the latest orders with status indicators
+
+### 👥 Customer Management
+
+Access customer management at `/customer`:
+
+#### Creating Customers
+
+1. Click the **"Add Customer"** button
+2. Fill in the required information:
+   - Full Name
+   - Email Address
+   - Phone Number
+   - Company Name
+   - Address
+3. Click **"Create Customer"** to save
+
+#### Managing Customers
+
+- **Search**: Use the search bar to find customers by name, email, phone, or company
+- **View Details**: Click the eye icon to view customer details and associated orders
+- **Edit Customer**: Click the edit icon to update customer information
+- **Delete Customer**: Click the delete icon to soft-delete a customer (data is preserved)
+- **Export Data**: Use the "Export Excel" button to download customer data
+
+### 📋 Order Management
+
+Access order management at `/order`:
+
+#### Creating Orders
+
+1. Click the **"Add Order"** button
+2. Fill in the order details:
+   - **Customer**: Enter customer ID or email address
+   - **Order Type**: Select from Sales, Service, or Subscription
+   - **Total Amount**: Enter the order value
+   - **Description**: Add optional order description
+3. Click **"Create Order"** to save
+
+#### Managing Orders
+
+- **Search & Filter**:
+  - Search by customer, description, or order ID
+  - Filter by status, order type, amount range, and date range
+  - Use active filters to refine your view
+- **Status Management**:
+  - **Pending** → **Processing** → **Completed**
+  - **Pending** → **Cancelled**
+  - **Processing** → **Cancelled**
+- **Bulk Operations**:
+  - Select multiple pending orders using checkboxes
+  - Delete selected orders with confirmation dialog
+- **Export Data**: Download filtered order data to Excel
+
+#### Order Status Workflow
+
+```
+Pending ────┐
+│           ▼
+│       Processing ────┐
+│           │         ▼
+└───────────┴──► Completed
+            │
+            ▼
+        Cancelled
+```
+
+### 🔍 Advanced Features
+
+#### Filtering and Search
+
+- **Debounced Search**: Real-time search with optimized performance
+- **Multi-criteria Filtering**: Combine multiple filters for precise results
+- **Date Range Selection**: Custom date pickers for time-based filtering
+- **Active Filter Management**: View and remove applied filters easily
+
+#### Data Export
+
+- **Excel Export**: Download customer and order data in Excel format
+- **Filtered Exports**: Export only the data matching your current filters
+- **Bulk Data**: Export large datasets efficiently
+
+#### Responsive Design
+
+- **Mobile-First**: Optimized for mobile devices and tablets
+- **Adaptive Tables**: Columns hide/show based on screen size
+- **Touch-Friendly**: Large touch targets for mobile interaction
+
+### 🎯 Common Workflows
+
+#### Processing a New Order
+
+1. **Customer Check**: Verify customer exists or create new customer
+2. **Order Creation**: Create order with customer association
+3. **Status Updates**: Move order through workflow (Pending → Processing → Completed)
+4. **Analytics**: Track order in dashboard metrics
+
+#### Monthly Reporting
+
+1. **Dashboard**: Navigate to overview page
+2. **Date Filter**: Select monthly date range
+3. **Export Data**: Download order data for the period
+4. **Analysis**: Review revenue charts and statistics
+
+#### Customer Service
+
+1. **Search Customer**: Find customer by email or phone
+2. **View History**: Check customer's order history
+3. **Order Management**: Update order status or add new orders
+4. **Communication**: Use order descriptions for notes and updates
+
+### 🔧 Tips and Best Practices
+
+#### Performance Optimization
+
+- Use specific date ranges instead of "All" for better performance
+- Apply filters before exporting large datasets
+- Use search terms of 3+ characters for optimal results
+
+#### Data Management
+
+- Soft deletion preserves data integrity - deleted items can be recovered
+- Regular exports provide data backups
+- Use descriptive order descriptions for better tracking
+
+#### User Experience
+
+- Bookmark frequently used filter combinations
+- Use bulk operations for efficiency when managing multiple orders
+- Monitor dashboard regularly for business insights
+
+### 🚨 Important Notes
+
+- **Data Validation**: All forms include real-time validation with helpful error messages
+- **Error Handling**: User-friendly error messages with suggested actions
+- **Auto-save**: Modal forms reset automatically to prevent data loss
+- **Responsive**: All features work seamlessly across desktop, tablet, and mobile devices
+
+### 📱 Mobile Usage
+
+The application is fully responsive and optimized for mobile devices:
+
+- Swipe-friendly table navigation
+- Collapsible sidebar for more screen space
+- Touch-optimized buttons and inputs
+- Simplified layouts for small screens

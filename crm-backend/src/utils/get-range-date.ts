@@ -4,35 +4,47 @@ export interface RangeResult {
   values: number;
 }
 
+function daysInMonthUTC(date: Date): number {
+  const y = date.getUTCFullYear();
+  const m = date.getUTCMonth();
+  return new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+}
+
 export function getDateRange(range: string): RangeResult {
-  const now = new Date();
-  let fromDate = new Date();
+  const toDate = new Date();
+  let fromDate = new Date(toDate);
   let values = 0;
+
   switch (range) {
     case '1d':
-      fromDate.setDate(now.getDate() - 1);
+      fromDate.setUTCDate(toDate.getUTCDate() - 1);
       values = 6;
       break;
 
     case '7d':
-      fromDate.setDate(now.getDate() - 7);
+      fromDate.setUTCDate(toDate.getUTCDate() - 7);
       values = 7;
       break;
 
     case '1m':
-      fromDate.setMonth(now.getMonth() - 1);
-      values = 30;
+      fromDate.setUTCMonth(toDate.getUTCMonth() - 1);
+      values = daysInMonthUTC(toDate);
       break;
 
     case '1y':
-      fromDate.setFullYear(now.getFullYear() - 1);
+      fromDate.setUTCFullYear(toDate.getUTCFullYear() - 1);
       values = 12;
       break;
 
     case 'all':
-      fromDate = new Date(1970, 0, 1);
+      fromDate = new Date(Date.UTC(1970, 0, 1));
       values = 5;
       break;
+
+    default:
+      fromDate.setUTCDate(toDate.getUTCDate() - 7);
+      values = 7;
   }
-  return { fromDate, toDate: now, values };
+
+  return { fromDate, toDate, values };
 }

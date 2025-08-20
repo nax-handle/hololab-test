@@ -10,11 +10,19 @@ export class OrderRepository {
     private orderModel: Model<OrderDocument>,
   ) {}
   async getOrderOverview(fromDate: string, toDate: string) {
+    const sevenHours = 7 * 60 * 60 * 1000;
     return this.orderModel.aggregate([
       {
         $match: {
           isDeleted: false,
-          createdAt: { $gte: new Date(fromDate), $lte: new Date(toDate) },
+          createdAt: {
+            $gte: new Date(
+              new Date(fromDate).setHours(0, 0, 0, 0) + sevenHours,
+            ),
+            $lte: new Date(
+              new Date(toDate).setHours(23, 59, 59, 999) + sevenHours,
+            ),
+          },
         },
       },
       {
