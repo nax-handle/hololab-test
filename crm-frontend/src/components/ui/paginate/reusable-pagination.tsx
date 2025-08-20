@@ -10,25 +10,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-/**
- * A reusable pagination component with smart page number display.
- *
- * Features:
- * - Smart pagination with ellipsis for large page counts
- * - Configurable maximum visible pages
- * - Automatic hiding when there's only one page
- * - Disabled state for previous/next buttons at boundaries
- *
- * @example
- * ```tsx
- * <ReusablePagination
- *   currentPage={page}
- *   totalPages={totalPages}
- *   onPageChange={setPage}
- *   maxVisiblePages={5}
- * />
- * ```
- */
 interface ReusablePaginationProps {
   currentPage: number;
   totalPages: number;
@@ -46,23 +27,19 @@ export function ReusablePagination({
   showEllipsis = true,
   className,
 }: ReusablePaginationProps) {
-  // Don't render pagination if there's only one page or no pages
   if (totalPages <= 1) {
     return null;
   }
 
-  // Calculate which page numbers to show
   const getVisiblePages = () => {
     if (totalPages <= maxVisiblePages) {
-      // Show all pages if total is less than max
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
 
     const half = Math.floor(maxVisiblePages / 2);
     let start = Math.max(1, currentPage - half);
-    let end = Math.min(totalPages, start + maxVisiblePages - 1);
+    const end = Math.min(totalPages, start + maxVisiblePages - 1);
 
-    // Adjust start if we're near the end
     if (end - start + 1 < maxVisiblePages) {
       start = Math.max(1, end - maxVisiblePages + 1);
     }
@@ -101,7 +78,6 @@ export function ReusablePagination({
           />
         </PaginationItem>
 
-        {/* Show first page if not visible and there's an ellipsis */}
         {showStartEllipsis && (
           <>
             <PaginationItem>
@@ -131,7 +107,6 @@ export function ReusablePagination({
           </PaginationItem>
         ))}
 
-        {/* Show last page if not visible and there's an ellipsis */}
         {showEndEllipsis && (
           <>
             <PaginationItem>

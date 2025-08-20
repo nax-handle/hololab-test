@@ -36,7 +36,7 @@ import {
   OrderFilters,
   OrdersQueryParams,
 } from "@/types/order";
-import { ReusablePagination } from "@/components/ui/reusable-pagination";
+import { ReusablePagination } from "@/components/ui/paginate/reusable-pagination";
 import { useGetOrders } from "@/hooks/use-order";
 import { useDebounce } from "@/hooks/use-debounce";
 import { toast } from "sonner";

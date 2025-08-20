@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Customer, CustomersQueryParams } from "@/types/customer";
-import { ReusablePagination } from "@/components/ui/reusable-pagination";
+import { ReusablePagination } from "@/components/ui/paginate/reusable-pagination";
 import { useGetCustomers } from "@/hooks/use-customer";
 import { useDebounce } from "@/hooks/use-debounce";
 import { EditCustomerModal, DeleteCustomerModal } from "./modal";
