@@ -100,7 +100,6 @@ export class OrderRepository {
       },
     ]);
   }
-
   async getChartData(data: RangeResult) {
     const { fromDate, toDate, values } = data;
     return this.orderModel.aggregate([
