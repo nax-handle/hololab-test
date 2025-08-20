@@ -34,7 +34,7 @@ export async function updateOrder<T>(
   updateData: UpdateOrderData
 ): Promise<ApiResponse<T>> {
   const data = await axiosInstance.patch<ApiResponse<T>>(
-    `/orders/${id}`,
+    `/orders/${id}/status`,
     updateData
   );
   return data.data;

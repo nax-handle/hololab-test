@@ -1,6 +1,6 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ORDER_STATUS, ORDER_TYPE } from 'src/common/enums';
+import { ORDER_TYPE } from 'src/common/enums';
 
 export class CreateOrderDto {
   @ApiProperty({
@@ -13,11 +13,6 @@ export class CreateOrderDto {
   @ApiProperty({ enum: ORDER_TYPE, example: ORDER_TYPE.SALES })
   @IsEnum(ORDER_TYPE)
   orderType: ORDER_TYPE;
-
-  @ApiPropertyOptional({ enum: ORDER_STATUS, example: ORDER_STATUS.PENDING })
-  @IsEnum(ORDER_STATUS)
-  @IsOptional()
-  status?: ORDER_STATUS;
 
   @ApiProperty({ example: 199.99 })
   @IsNumber()

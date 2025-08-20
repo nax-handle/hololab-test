@@ -25,6 +25,7 @@ import type {
   OrderOverview,
   ChartResponse,
   ChartParams,
+  ApiError,
 } from "@/types";
 import { toast } from "sonner";
 
@@ -86,8 +87,8 @@ export function useUpdateOrder() {
       toast.success("Order updated successfully");
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to update order");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message);
     },
   });
 }
@@ -101,8 +102,8 @@ export function useDeleteOrder() {
       toast.success("Order deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to delete order");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message || "Failed to delete order");
     },
   });
 }

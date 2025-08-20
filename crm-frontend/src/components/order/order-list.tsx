@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Edit, Search, Trash2, Download } from "lucide-react";
+import { ArrowUpDown, Search, Trash2, Download } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { OrderFiltersComponent } from "./filters/order-filter";
@@ -333,7 +333,7 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                           size="sm"
                           onClick={() => handleEditOrder(order)}
                         >
-                          <Edit className="w-4 h-4" />
+                          <ArrowUpDown className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
