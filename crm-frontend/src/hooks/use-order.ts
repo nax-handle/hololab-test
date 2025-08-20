@@ -71,8 +71,8 @@ export function useCreateOrder() {
       toast.success("Order created successfully");
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
-    onError: (error: Error) => {
-      toast.error(error.message || "Failed to create order");
+    onError: (error: ApiError) => {
+      toast.error(error.response.data.message || "Failed to create order");
     },
   });
 }

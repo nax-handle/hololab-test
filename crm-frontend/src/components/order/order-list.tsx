@@ -25,7 +25,12 @@ import {
   ViewOrderModal,
   BulkDeleteModal,
 } from "./modal";
-import { Order, OrderFilters, OrdersQueryParams } from "@/types/order";
+import {
+  Order,
+  ORDER_STATUS,
+  OrderFilters,
+  OrdersQueryParams,
+} from "@/types/order";
 import {
   Pagination,
   PaginationContent,
@@ -280,13 +285,15 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                 items.map((order) => (
                   <TableRow key={order._id}>
                     <TableCell>
-                      <Checkbox
-                        checked={selectedOrders.has(order._id)}
-                        onCheckedChange={(checked) =>
-                          handleSelectOrder(order._id, checked as boolean)
-                        }
-                        aria-label={`Select order ${order._id}`}
-                      />
+                      {order.status === ORDER_STATUS.PENDING && (
+                        <Checkbox
+                          checked={selectedOrders.has(order._id)}
+                          onCheckedChange={(checked) =>
+                            handleSelectOrder(order._id, checked as boolean)
+                          }
+                          aria-label={`Select order ${order._id}`}
+                        />
+                      )}
                     </TableCell>
                     <TableCell className="font-medium hidden sm:table-cell">
                       <span className="font-mono text-xs">{order._id}</span>
@@ -328,20 +335,25 @@ export default function OrderList({ limit = 7, customer }: OrderListProps) {
                         >
                           <Eye className="w-4 h-4" />
                         </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleEditOrder(order)}
-                        >
-                          <ArrowUpDown className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleDeleteOrder(order)}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        {(order.status === ORDER_STATUS.PENDING ||
+                          order.status === ORDER_STATUS.PROCESSING) && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleEditOrder(order)}
+                          >
+                            <ArrowUpDown className="w-4 h-4" />
+                          </Button>
+                        )}
+                        {order.status === ORDER_STATUS.PENDING && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDeleteOrder(order)}
+                          >
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>

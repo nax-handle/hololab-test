@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,7 +14,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -21,9 +22,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Plus } from "lucide-react";
 import { useCreateOrder } from "@/hooks/use-order";
 import { ORDER_TYPE } from "@/types/order";
+import { addOrderSchema, type AddOrderFormData } from "@/schemas/order.schema";
 
 interface AddOrderModalProps {
   onOrderCreated?: () => void;
@@ -31,45 +41,44 @@ interface AddOrderModalProps {
 
 export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
   const [open, setOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    customer: "",
-    orderType: "sales",
-    totalAmount: "",
-    description: "",
-  });
-
   const createOrderMutation = useCreateOrder();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.customer || !formData.orderType || !formData.totalAmount) {
-      return;
-    }
-
-    await createOrderMutation.mutateAsync({
-      customer: formData.customer,
-      orderType: formData.orderType,
-      totalAmount: parseFloat(formData.totalAmount),
-      description: formData.description,
-    });
-
-    setFormData({
+  const form = useForm<AddOrderFormData>({
+    resolver: zodResolver(addOrderSchema),
+    defaultValues: {
       customer: "",
-      orderType: "",
-      totalAmount: "",
+      orderType: ORDER_TYPE.SALES,
+      totalAmount: 0,
       description: "",
-    });
-    setOpen(false);
-    onOrderCreated?.();
+    },
+  });
+
+  const handleSubmit = async (data: AddOrderFormData) => {
+    try {
+      await createOrderMutation.mutateAsync({
+        customer: data.customer,
+        orderType: data.orderType,
+        totalAmount: data.totalAmount,
+        description: data.description || "",
+      });
+
+      form.reset();
+      setOpen(false);
+      onOrderCreated?.();
+    } catch (error) {
+      console.error("Error creating order:", error);
+    }
   };
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen);
+    if (!newOpen) {
+      form.reset();
+    }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -83,75 +92,117 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
             Create a new order with customer details and order information.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="customer">Customer ID or Email</Label>
-            <Input
-              id="customer"
-              value={formData.customer}
-              onChange={(e) => handleInputChange("customer", e.target.value)}
-              placeholder="Enter customer ID or Email"
-              required
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="customer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Customer ID or Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter customer ID or Email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="orderType">Order Type</Label>
-            <Select
-              value={formData.orderType}
-              onValueChange={(value) => handleInputChange("orderType", value)}
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select order type" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(ORDER_TYPE).map((type) => (
-                  <SelectItem key={type} value={type}>
-                    {type}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="totalAmount">Total Amount</Label>
-            <Input
-              id="totalAmount"
-              type="number"
-              step="0.01"
-              value={formData.totalAmount}
-              onChange={(e) => handleInputChange("totalAmount", e.target.value)}
-              placeholder="0.00"
-              required
+            <FormField
+              control={form.control}
+              name="orderType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Order Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select order type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(ORDER_TYPE).map((type) => (
+                        <SelectItem key={type} value={type}>
+                          {type}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Enter order description"
-              rows={3}
+            <FormField
+              control={form.control}
+              name="totalAmount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Total Amount</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      placeholder="0.00"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseFloat(e.target.value) || 0)
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={createOrderMutation.isPending}>
-              {createOrderMutation.isPending ? "Creating..." : "Create Order"}
-            </Button>
-          </DialogFooter>
-        </form>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter order description"
+                      rows={3}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => handleOpenChange(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  createOrderMutation.isPending || form.formState.isSubmitting
+                }
+              >
+                {createOrderMutation.isPending || form.formState.isSubmitting
+                  ? "Creating..."
+                  : "Create Order"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
