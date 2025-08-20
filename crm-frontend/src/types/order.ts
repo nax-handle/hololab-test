@@ -76,8 +76,6 @@ export type ChartRange = "1d" | "7d" | "1m" | "1y" | "all";
 
 export interface ChartParams {
   range: ChartRange;
-  fromDate?: string;
-  toDate?: string;
 }
 
 export interface ChartDataPoint {

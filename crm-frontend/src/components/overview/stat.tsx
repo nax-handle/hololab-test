@@ -41,48 +41,58 @@ export default function Stat() {
   const overview = overviewData?.[0];
   return (
     <div className="space-y-4">
-      <div className="flex justify-end w-full items-center gap-4">
-        <div className="flex items-center ">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                variant="outline"
-                className="justify-start text-left font-normal bg-transparent min-w-[240px]"
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {quickDateRange?.from ? (
-                  quickDateRange.to ? (
-                    <>
-                      {format(quickDateRange.from, "MMM dd")} -{" "}
-                      {format(quickDateRange.to, "MMM dd, yyyy")}
-                    </>
+      <div className="flex  w-full items-center gap-4">
+        <div className="flex w-full flex-wrap">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">Overview</h1>
+              <p className="text-muted-foreground ">
+                Track and manage all your customer orders
+              </p>
+            </div>
+          </div>
+          <div className="md:ml-auto max-md:mt-2 mt-auto">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="justify-start text-left font-normal bg-transparent min-w-[240px]"
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {quickDateRange?.from ? (
+                    quickDateRange.to ? (
+                      <>
+                        {format(quickDateRange.from, "MMM dd")} -{" "}
+                        {format(quickDateRange.to, "MMM dd, yyyy")}
+                      </>
+                    ) : (
+                      format(quickDateRange.from, "MMM dd, yyyy")
+                    )
                   ) : (
-                    format(quickDateRange.from, "MMM dd, yyyy")
-                  )
-                ) : (
-                  <span className="text-muted-foreground">
-                    Select date range
-                  </span>
-                )}
+                    <span className="text-muted-foreground">
+                      Select date range
+                    </span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={quickDateRange?.from}
+                  selected={quickDateRange}
+                  onSelect={handleQuickDateRangeChange}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+            {quickDateRange?.from && (
+              <Button variant="ghost" size="sm" onClick={clearQuickDateRange}>
+                <X />
               </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar
-                initialFocus
-                mode="range"
-                defaultMonth={quickDateRange?.from}
-                selected={quickDateRange}
-                onSelect={handleQuickDateRangeChange}
-                numberOfMonths={2}
-              />
-            </PopoverContent>
-          </Popover>
+            )}
+          </div>
         </div>
-        {quickDateRange?.from && (
-          <Button variant="ghost" size="sm" onClick={clearQuickDateRange}>
-            <X />
-          </Button>
-        )}
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>

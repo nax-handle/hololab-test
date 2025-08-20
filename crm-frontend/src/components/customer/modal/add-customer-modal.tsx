@@ -57,9 +57,9 @@ export function AddCustomerModal({ onCustomerCreated }: AddCustomerModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Add Customer
+        <Button className="max-md:mx-auto">
+          <Plus className="h-4 w-4 " />
+          <span className="max-md:hidden ml-2">Add Customer</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

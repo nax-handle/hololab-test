@@ -108,6 +108,7 @@ export class OrderRepository {
         $match: {
           isDeleted: false,
           createdAt: { $gte: fromDate, $lt: toDate },
+          status: { $in: [ORDER_STATUS.COMPLETED] },
         },
       },
       {
