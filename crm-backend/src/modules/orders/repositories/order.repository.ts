@@ -16,10 +16,10 @@ export class OrderRepository {
           isDeleted: false,
           createdAt: {
             $gte: new Date(
-              new Date(fromDate).setHours(0, 0, 0, 0) + SEVEN_HOURS,
+              new Date(fromDate).setHours(0, 0, 0, 0) - SEVEN_HOURS,
             ),
             $lte: new Date(
-              new Date(toDate).setHours(23, 59, 59, 999) + SEVEN_HOURS,
+              new Date(toDate).setHours(23, 59, 59, 999) - SEVEN_HOURS,
             ),
           },
         },
@@ -110,25 +110,23 @@ export class OrderRepository {
 
   async getChartData(data: RangeResult) {
     const { fromDate, toDate, values } = data;
+    const from = new Date(new Date(fromDate).getTime() - SEVEN_HOURS);
+    const to = new Date(new Date(toDate).getTime() - SEVEN_HOURS);
     return this.orderModel.aggregate([
       {
         $match: {
           isDeleted: false,
           createdAt: {
-            $gte: new Date(
-              new Date(fromDate).setHours(0, 0, 0, 0) + SEVEN_HOURS,
-            ),
-            $lt: new Date(
-              new Date(toDate).setHours(23, 59, 59, 999) + SEVEN_HOURS,
-            ),
+            $gte: from,
+            $lt: to,
           },
           status: { $in: [ORDER_STATUS.COMPLETED] },
         },
       },
       {
         $addFields: {
-          totalMs: { $subtract: [toDate, fromDate] },
-          relMs: { $subtract: ['$createdAt', fromDate] },
+          totalMs: { $subtract: [to, from] },
+          relMs: { $subtract: ['$createdAt', from] },
         },
       },
       {
