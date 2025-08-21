@@ -184,7 +184,6 @@ export class OrdersService {
     return { deletedCount: result.modifiedCount };
   }
   async getOrderOverview(fromDate: string, toDate: string) {
-    console.log();
     return this.orderRepository.getOrderOverview(fromDate, toDate);
   }
   async getOrderChart(range: string) {
