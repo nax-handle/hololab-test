@@ -58,6 +58,11 @@ export default function SearchCustomer({ onChange }: SearchCustomersProps) {
           </RadioGroup>
         </div>
       )}
+      {customers && customers.length === 0 && debouncedSearch && (
+        <div className="text-center py-4 text-sm text-muted-foreground">
+          No customer found with {debouncedSearch}
+        </div>
+      )}
     </div>
   );
 }
