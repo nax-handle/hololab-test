@@ -3,10 +3,10 @@ export interface RangeResult {
   toDate: Date;
   values: number;
 }
-
+const ONE_DAY = 24 * 60 * 60 * 1000;
 export function getDateRange(range: string): RangeResult {
-  const toDate = new Date();
-  let fromDate = new Date(toDate);
+  const toDate = new Date(new Date().setHours(23, 59, 59, 999) + ONE_DAY);
+  let fromDate: Date = new Date(toDate.setHours(0, 0, 0, 0) + ONE_DAY);
   let values = 0;
 
   switch (range) {
@@ -16,7 +16,7 @@ export function getDateRange(range: string): RangeResult {
       break;
 
     case '7d':
-      fromDate.setUTCDate(toDate.getUTCDate() - 7);
+      fromDate.setUTCDate(toDate.getUTCDate() - 6);
       values = 7;
       break;
 

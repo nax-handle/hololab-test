@@ -3,24 +3,23 @@ import { Order, OrderDocument } from '../schemas/order.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { ORDER_STATUS } from 'src/common/enums/order.enum';
 import { RangeResult } from 'src/utils';
-
+const SEVEN_HOURS = 7 * 60 * 60 * 1000;
 export class OrderRepository {
   constructor(
     @InjectModel(Order.name)
     private orderModel: Model<OrderDocument>,
   ) {}
   async getOrderOverview(fromDate: string, toDate: string) {
-    const sevenHours = 7 * 60 * 60 * 1000;
     return this.orderModel.aggregate([
       {
         $match: {
           isDeleted: false,
           createdAt: {
             $gte: new Date(
-              new Date(fromDate).setHours(0, 0, 0, 0) + sevenHours,
+              new Date(fromDate).setHours(0, 0, 0, 0) + SEVEN_HOURS,
             ),
             $lte: new Date(
-              new Date(toDate).setHours(23, 59, 59, 999) + sevenHours,
+              new Date(toDate).setHours(23, 59, 59, 999) + SEVEN_HOURS,
             ),
           },
         },
@@ -111,6 +110,17 @@ export class OrderRepository {
 
   async getChartData(data: RangeResult) {
     const { fromDate, toDate, values } = data;
+    console.log(
+      await this.orderModel.aggregate([
+        {
+          $match: {
+            isDeleted: false,
+            createdAt: { $gte: fromDate, $lt: toDate },
+            status: { $in: [ORDER_STATUS.COMPLETED] },
+          },
+        },
+      ]),
+    );
     return this.orderModel.aggregate([
       {
         $match: {
