@@ -1,6 +1,6 @@
 "use client";
 
-import { RevenueChart } from "./revenue-chart";
+import { RevenueChart } from "./chart/revenue-chart";
 import OrderList from "@/components/order/order-list";
 import Stat from "./stat";
 

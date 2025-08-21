@@ -11,14 +11,11 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart";
 import { formatCurrency, mapChartData } from "@/lib/order";
 import { useGetOrderChart } from "@/hooks/use-order";
 import { ChartRange } from "@/types";
+import { CustomTooltip } from "./tool-tip";
 
 const timePeriods = [
   { label: "1D", value: "1d" as ChartRange },
@@ -156,7 +153,7 @@ export function RevenueChart() {
                   tickFormatter={(value) => formatCurrency(Number(value))}
                 />
                 <ChartTooltip
-                  content={<ChartTooltipContent />}
+                  content={<CustomTooltip />}
                   formatter={(value) => [formatCurrency(Number(value))]}
                 />
                 <Line
