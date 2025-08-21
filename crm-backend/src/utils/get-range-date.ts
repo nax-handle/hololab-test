@@ -5,8 +5,27 @@ export interface RangeResult {
 }
 const ONE_DAY = 24 * 60 * 60 * 1000;
 export function getDateRange(range: string): RangeResult {
-  const toDate = new Date(new Date().setHours(23, 59, 59, 999) + ONE_DAY);
-  let fromDate: Date = new Date(toDate.setHours(0, 0, 0, 0) + ONE_DAY);
+  const now = new Date();
+  const endOfTodayUTC = Date.UTC(
+    now.getUTCFullYear(),
+    now.getUTCMonth(),
+    now.getUTCDate(),
+    23,
+    59,
+    59,
+    999,
+  );
+  const toDate = new Date(endOfTodayUTC + ONE_DAY);
+  const startOfToDateUTC = Date.UTC(
+    toDate.getUTCFullYear(),
+    toDate.getUTCMonth(),
+    toDate.getUTCDate(),
+    0,
+    0,
+    0,
+    0,
+  );
+  let fromDate = new Date(startOfToDateUTC + ONE_DAY);
   let values = 0;
 
   switch (range) {

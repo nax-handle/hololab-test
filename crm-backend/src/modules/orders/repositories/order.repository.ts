@@ -110,22 +110,18 @@ export class OrderRepository {
 
   async getChartData(data: RangeResult) {
     const { fromDate, toDate, values } = data;
-    console.log(
-      await this.orderModel.aggregate([
-        {
-          $match: {
-            isDeleted: false,
-            createdAt: { $gte: fromDate, $lt: toDate },
-            status: { $in: [ORDER_STATUS.COMPLETED] },
-          },
-        },
-      ]),
-    );
     return this.orderModel.aggregate([
       {
         $match: {
           isDeleted: false,
-          createdAt: { $gte: fromDate, $lt: toDate },
+          createdAt: {
+            $gte: new Date(
+              new Date(fromDate).setHours(0, 0, 0, 0) + SEVEN_HOURS,
+            ),
+            $lt: new Date(
+              new Date(toDate).setHours(23, 59, 59, 999) + SEVEN_HOURS,
+            ),
+          },
           status: { $in: [ORDER_STATUS.COMPLETED] },
         },
       },
