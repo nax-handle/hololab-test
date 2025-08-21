@@ -109,7 +109,7 @@ crm-backend/
 
 - **Modern React UI** with Next.js 15 and App Router
 - **Shadcn/UI Components** for consistent design system
-- **Real-time State Management** with React Query
+- **Real-time State Management** with React Query (TanStack Query)
 - **Form Handling** with React Hook Form and Zod validation
 - **Responsive Tables** with sorting, filtering, and pagination
 - **Modal System** for CRUD operations
@@ -135,7 +135,7 @@ crm-backend/
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first CSS framework
 - **Shadcn/UI** - Modern component library
-- **React Query** - Server state management
+- **TanStack Query** - Server state management
 - **React Hook Form** - Form handling
 - **Zod** - Schema validation
 - **Recharts** - Data visualization
