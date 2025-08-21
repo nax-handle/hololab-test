@@ -42,3 +42,10 @@ export async function deleteCustomer<T>(id: string): Promise<ApiResponse<T>> {
   const data = await http.delete<ApiResponse<T>>(`/customers/${id}`);
   return data.data;
 }
+
+export async function searchCustomer<T>(q: string): Promise<ApiResponse<T>> {
+  const data = await http.get<ApiResponse<T>>(`/customers/search`, {
+    params: { q },
+  });
+  return data.data;
+}

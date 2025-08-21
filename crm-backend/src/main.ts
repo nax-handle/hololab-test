@@ -18,7 +18,16 @@ async function bootstrap() {
       : ['https://hololab.interview.io.vn'];
   app.enableCors(allowedOrigins);
   SwaggerModule.setup('api', app, documentFactory);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
   app.useGlobalInterceptors(new TransformInterceptor(app.get(Reflector)));
   await app.listen(process.env.PORT ?? 3000);
   console.log(`http://localhost:${process.env.PORT ?? 3000}/api`);

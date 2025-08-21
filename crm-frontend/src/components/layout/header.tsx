@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { PanelLeft } from "lucide-react";
 
 export function AppHeader() {
-  const { toggleSidebar, isMobile, open } = useSidebar();
+  const { toggleSidebar, isMobile } = useSidebar();
 
   return (
     <header className="z-10 flex fixed w-full h-16 shrink-0 items-center gap-2 border-b px-4 bg-background">
@@ -26,12 +26,6 @@ export function AppHeader() {
         <div className="h-6 w-px bg-border mx-2" />
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-semibold">CRM Dashboard</h1>
-        </div>
-      </div>
-      
-      <div className="ml-auto flex items-center gap-2">
-        <div className="text-sm text-muted-foreground">
-          Sidebar: {open ? "Open" : "Closed"}
         </div>
       </div>
     </header>

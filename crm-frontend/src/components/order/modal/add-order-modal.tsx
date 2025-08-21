@@ -34,6 +34,7 @@ import { Plus } from "lucide-react";
 import { useCreateOrder } from "@/hooks/use-order";
 import { ORDER_TYPE } from "@/types/order";
 import { addOrderSchema, type AddOrderFormData } from "@/schemas/order.schema";
+import SearchCustomers from "@/components/customer/search/search-customer";
 
 interface AddOrderModalProps {
   onOrderCreated?: () => void;
@@ -59,7 +60,7 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
         customer: data.customer,
         orderType: data.orderType,
         totalAmount: data.totalAmount,
-        description: data.description || "",
+        description: data.description,
       });
 
       form.reset();
@@ -89,9 +90,10 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
         <DialogHeader>
           <DialogTitle>Add New Order</DialogTitle>
           <DialogDescription>
-            Create a new order with customer details and order information.
+            Create a new order with customer details and order 1 information.
           </DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
@@ -102,18 +104,14 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
               name="customer"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Customer ID or Email</FormLabel>
+                  <FormLabel>Search Customers</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Enter customer ID or Email"
-                      {...field}
-                    />
+                    <SearchCustomers onChange={field.onChange} />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />
-
+            
             <FormField
               control={form.control}
               name="orderType"
