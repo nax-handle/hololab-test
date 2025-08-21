@@ -49,7 +49,7 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
     defaultValues: {
       customer: "",
       orderType: ORDER_TYPE.SALES,
-      totalAmount: 0,
+      totalAmount: undefined,
       description: "",
     },
   });
@@ -111,7 +111,7 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
                 </FormItem>
               )}
             />
-            
+
             <FormField
               control={form.control}
               name="orderType"
@@ -148,8 +148,6 @@ export function AddOrderModal({ onOrderCreated }: AddOrderModalProps) {
                   <FormLabel>Total Amount</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      step="0.01"
                       placeholder="0.00"
                       {...field}
                       onChange={(e) =>

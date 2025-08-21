@@ -4,12 +4,6 @@ export interface RangeResult {
   values: number;
 }
 
-function daysInMonthUTC(date: Date): number {
-  const y = date.getUTCFullYear();
-  const m = date.getUTCMonth();
-  return new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
-}
-
 export function getDateRange(range: string): RangeResult {
   const toDate = new Date();
   let fromDate = new Date(toDate);
@@ -28,7 +22,7 @@ export function getDateRange(range: string): RangeResult {
 
     case '1m':
       fromDate.setUTCMonth(toDate.getUTCMonth() - 1);
-      values = daysInMonthUTC(toDate);
+      values = 30;
       break;
 
     case '1y':

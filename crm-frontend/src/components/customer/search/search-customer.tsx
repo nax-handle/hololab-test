@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input";
 import { useSearchCustomer } from "@/hooks/use-customer";
 import { useDebounce } from "@/hooks/use-debounce";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UserItem from "./user-item";
 import { Search } from "lucide-react";
 import { RadioGroup } from "@/components/ui/radio-group";
@@ -10,8 +10,19 @@ interface SearchCustomersProps {
 }
 export default function SearchCustomer({ onChange }: SearchCustomersProps) {
   const [search, setSearch] = useState("");
+  const [selectedCustomer, setSelectedCustomer] = useState<string>("");
   const debouncedSearch = useDebounce(search, 200);
-  const { isLoading, data: customers } = useSearchCustomer(debouncedSearch);
+  const { isLoading, data: customers = [] } =
+    useSearchCustomer(debouncedSearch);
+  useEffect(() => {
+    if (customers.length > 0) {
+      const firstCustomerId = customers[0]._id;
+      setSelectedCustomer(firstCustomerId);
+      onChange(firstCustomerId);
+    } else {
+      setSelectedCustomer("");
+    }
+  }, [customers, onChange]);
   return (
     <div className="space-y-2">
       <div className="relative flex-1">
@@ -34,8 +45,11 @@ export default function SearchCustomer({ onChange }: SearchCustomersProps) {
             Found {customers.length} customer(s)
           </div>
           <RadioGroup
-            defaultValue={customers[0]._id}
-            onValueChange={(value) => onChange(value)}
+            value={selectedCustomer}
+            onValueChange={(value) => {
+              setSelectedCustomer(value);
+              onChange(value);
+            }}
             className="space-y-2 overflow-y-scroll max-h-[150px]"
           >
             {customers.map((customer) => (
