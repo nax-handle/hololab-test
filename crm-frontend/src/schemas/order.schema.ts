@@ -13,7 +13,7 @@ export const addOrderSchema = z.object({
   totalAmount: z
     .number({ message: "Total amount must be a number" })
     .min(0.01, "Total amount must be greater than 0"),
-  description: z.string().optional(),
+  description: z.string().trim().min(1, "Description is required"),
 });
 
 export type EditOrderFormData = z.infer<typeof editOrderSchema>;

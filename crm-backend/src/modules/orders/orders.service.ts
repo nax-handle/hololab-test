@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { Order, OrderDocument } from './schemas/order.schema';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { ORDER_STATUS } from 'src/common/enums';
 import { OrdersPaginationQueryDto } from './dto/orders-pagination-query.dto';
@@ -58,7 +58,7 @@ export class OrdersService {
         { customer: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
       ];
-      if (/^[0-9a-fA-F]{24}$/.test(search)) {
+      if (Types.ObjectId.isValid(search)) {
         searchConditions.push({ _id: convertToObjectId(search) });
       }
       filter.$or = searchConditions;

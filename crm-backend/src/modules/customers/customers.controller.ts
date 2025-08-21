@@ -34,7 +34,13 @@ export class CustomersController {
   addCustomer(@Body() createCustomerDto: CreateCustomerDto) {
     return this.customersService.create(createCustomerDto);
   }
-
+  @Get('search')
+  @ResponseMessage('Customer searched successfully')
+  @ApiOperation({ summary: 'Search customer' })
+  @ApiResponse({ status: 200, description: 'Customer searched' })
+  searchCustomer(@Query('q') query: string) {
+    return this.customersService.searchCustomer(query);
+  }
   @Patch(':id')
   @ResponseMessage('Customer updated successfully')
   @ApiOperation({ summary: 'Edit customer' })

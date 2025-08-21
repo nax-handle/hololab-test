@@ -7,7 +7,7 @@ import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Customer, CustomerDocument } from './schemas/customers.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { PaginationQueryDto } from './dto/pagination-query.dto';
 import { PaginateResponse } from 'src/common/dto';
 import { convertToObjectId } from 'src/utils';
@@ -81,13 +81,19 @@ export class CustomersService {
         { phone: { $regex: search, $options: 'i' } },
         { companyName: { $regex: search, $options: 'i' } },
       ];
-      if (/^[0-9a-fA-F]{24}$/.test(search)) {
+      if (Types.ObjectId.isValid(search)) {
         searchConditions.push({ _id: convertToObjectId(search) });
       }
       filter.$or = searchConditions;
     }
     const [items, total] = await Promise.all([
-      this.customerModel.find(filter).sort(sort).skip(skip).limit(limit),
+      this.customerModel
+        .find(filter)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit)
+        .lean()
+        .exec(),
       this.customerModel.countDocuments(filter),
     ]);
     return {
@@ -99,5 +105,27 @@ export class CustomersService {
         totalPages: Math.ceil(total / limit),
       },
     };
+  }
+  async searchCustomer(query: string): Promise<Customer[]> {
+    if (!query || typeof query !== 'string' || query.trim().length === 0) {
+      return [];
+    }
+    const searchQuery = query.trim();
+    const searchConditions: FilterQuery<Customer>[] = [
+      { fullName: { $regex: searchQuery, $options: 'i' } },
+      { email: { $regex: searchQuery, $options: 'i' } },
+      { phone: { $regex: searchQuery, $options: 'i' } },
+    ];
+
+    if (Types.ObjectId.isValid(searchQuery)) {
+      searchConditions.push({ _id: convertToObjectId(searchQuery) });
+    }
+    const customers = await this.customerModel
+      .find({
+        $and: [{ isDeleted: false }, { $or: searchConditions }],
+      })
+      .lean()
+      .exec();
+    return customers;
   }
 }

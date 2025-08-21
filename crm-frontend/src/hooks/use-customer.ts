@@ -12,6 +12,7 @@ import {
   createCustomer,
   updateCustomer,
   deleteCustomer,
+  searchCustomer,
 } from "@/services/customer.service";
 import type {
   ApiError,
@@ -96,5 +97,20 @@ export function useDeleteCustomer() {
     onError: (error: ApiError) => {
       toast.error(error.response.data.message);
     },
+  });
+}
+
+export function useSearchCustomer(q: string) {
+  return useQuery({
+    queryKey: ["search-customers", q],
+    queryFn: () => searchCustomer<Customer[]>(q),
+    select: (res) => res.data,
+    throwOnError: (error: ApiError) => {
+      toast.error(error.response.data.message);
+      return true;
+    },
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+    enabled: !!q,
   });
 }
