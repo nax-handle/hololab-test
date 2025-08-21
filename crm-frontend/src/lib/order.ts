@@ -107,6 +107,7 @@ export function getOrderStats(orders: Order[]) {
 
 export interface ChartData {
   time: string;
+  value: string;
   revenue: number;
 }
 
@@ -118,17 +119,24 @@ export function mapChartData(
   const timeLabels = getLabelsForRange(range, fromDate);
 
   return chartData.map((point, index) => ({
-    time: timeLabels[point.bucket] || timeLabels[index] || `${point.bucket}`,
+    time: timeLabels.time[point.bucket] || timeLabels.time[index] || "",
+    value: timeLabels.value[point.bucket] || timeLabels.value[index] || "",
     revenue: point.revenue,
   }));
 }
 
-function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
+function getLabelsForRange(
+  range: ChartRange,
+  fromDate?: string
+): { time: string[]; value: string[] } {
   const vnTime = moment(fromDate).tz("Asia/Ho_Chi_Minh");
 
   switch (range) {
     case "1d": {
-      return ["0:00", "4:00", "8:00", "12:00", "16:00", "20:00", "24:00"];
+      return {
+        time: ["0:00", "4:00", "8:00", "12:00", "16:00", "20:00", "24:00"],
+        value: [],
+      };
     }
     case "7d": {
       const dayNames = [
@@ -141,22 +149,31 @@ function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
         "Sunday",
       ];
       const startIndex = (vnTime.day() + 7) % 7;
-      return Array.from(
-        { length: 7 },
-        (_, i) => dayNames[(startIndex + i) % 7]
-      );
+      return {
+        time: Array.from(
+          { length: 7 },
+          (_, i) => dayNames[(startIndex + i) % 7]
+        ),
+        value: Array.from({ length: 7 }, (_, i) => {
+          const d = new Date();
+          d.setDate(vnTime.date() - 6 + i);
+          return d.toLocaleDateString();
+        }),
+      };
     }
     case "1m": {
-      const startDay = vnTime.date();
-      console.log(startDay);
-      const daysInMonth = vnTime.daysInMonth();
-      const labels: string[] = [];
-      for (let i = 0; i < daysInMonth; i++) {
-        const day = ((startDay + i) % daysInMonth) + 1;
-        labels.push(String(day));
-      }
-      console.log("label 1m", labels);
-      return labels;
+      return {
+        time: Array.from({ length: 30 }, (_, i) => {
+          const d = new Date();
+          d.setDate(vnTime.date() - 29 + i);
+          return d.getDate().toString();
+        }),
+        value: Array.from({ length: 30 }, (_, i) => {
+          const d = new Date();
+          d.setDate(vnTime.date() - 29 + i);
+          return d.toLocaleDateString();
+        }),
+      };
     }
     case "1y": {
       const monthNames = [
@@ -174,14 +191,21 @@ function getLabelsForRange(range: ChartRange, fromDate?: string): string[] {
         "Dec",
       ];
       const startMonth = vnTime.month();
-      return Array.from(
-        { length: 12 },
-        (_, i) => monthNames[(startMonth + i) % 12]
-      );
+      return {
+        time: Array.from(
+          { length: 12 },
+          (_, i) => monthNames[(startMonth + i) % 12]
+        ),
+        value: Array.from({ length: 12 }, (_, i) => {
+          const d = new Date();
+          d.setMonth(vnTime.month() - 12 + i);
+          return d.toLocaleDateString();
+        }),
+      };
     }
     case "all":
-      return [];
+      return { time: [], value: [] };
     default:
-      return [];
+      return { time: [], value: [] };
   }
 }
