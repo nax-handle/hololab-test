@@ -110,8 +110,10 @@ export class OrderRepository {
 
   async getChartData(data: RangeResult) {
     const { fromDate, toDate, values } = data;
-    const from = new Date(new Date(fromDate).getTime() - SEVEN_HOURS);
-    const to = new Date(new Date(toDate).getTime() - SEVEN_HOURS);
+    const from = new Date(new Date(fromDate).getTime());
+    const to = new Date(new Date(toDate).getTime());
+    console.log(from);
+    console.log(to);
     return this.orderModel.aggregate([
       {
         $match: {
