@@ -11,7 +11,7 @@ A modern Customer Relationship Management (CRM) system built with NestJS backend
 - [Docker Setup](#-docker-setup)
 - [Environment Variables](#-environment-variables)
 - [API Documentation](#-api-documentation)
-- [Demo](#-demo)
+- [Describe](#-describe)
 
 ### Key Capabilities
 
@@ -225,7 +225,7 @@ Once the backend is running, you can access the interactive Swagger documentatio
 
 **URL**: `http://localhost:8888/api`
 
-## 📖 Demo
+## 📖 Describe
 
 ### Getting Started
 
