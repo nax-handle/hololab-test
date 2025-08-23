@@ -294,16 +294,7 @@ Access order management at `/order`:
 
 #### Order Status Workflow
 
-```
-Pending ────┐
-│           ▼
-│       Processing ────┐
-│           │          ▼
-└───────────|      Completed
-            │
-            ▼
-        Cancelled
-```
+<img width="1207" height="416" alt="image" src="https://github.com/user-attachments/assets/655db243-94de-4d37-8c10-7bfc91d14037" />
 
 ### 🔍 Advanced Features
 
