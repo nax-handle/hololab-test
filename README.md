@@ -211,9 +211,10 @@ docker run -p 8888:8888 --env-file .env crm-backend
 NODE_ENV=development|production
 PORT=8888
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/crm?retryWrites=true&w=majority
+MONGODB_DB=crm-hololab
 ```
 
-### Frontend (.env.local)
+### Frontend (.env)
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8888
