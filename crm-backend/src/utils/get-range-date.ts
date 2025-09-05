@@ -16,7 +16,7 @@ export function getDateRange(range: string): RangeResult {
   switch (range) {
     case '1d':
       toDate = now.clone().endOf('hour').toDate();
-      values = 24;
+      values = 7;
       unit = 'hour';
       break;
 
