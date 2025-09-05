@@ -70,15 +70,9 @@ export class OrderRepository {
   }
 
   async getRevenueSeries(data: RangeResult) {
-    const { fromDate, toDate, values, unit } = data;
+    const { toDate, values, unit } = data;
     const tz = 'Asia/Ho_Chi_Minh';
-    console.log('unit', unit);
-    const from = new Date(fromDate);
     const to = new Date(toDate);
-
-    console.log(from);
-    console.log(to);
-
     const [doc] = await this.orderModel
       .aggregate<{ result: Array<{ bucket: number; revenue: number }> }>([
         {
