@@ -18,184 +18,165 @@ export class OrderRepository {
             $gte: new Date(
               new Date(fromDate).setHours(0, 0, 0, 0) - SEVEN_HOURS,
             ),
-            $lte: new Date(
-              new Date(toDate).setHours(23, 59, 59, 999) - SEVEN_HOURS,
-            ),
-          },
-        },
-      },
-      {
-        $facet: {
-          totals: [
-            {
-              $group: {
-                _id: null,
-                totalOrders: { $sum: 1 },
-                totalAmount: { $sum: '$totalAmount' },
-              },
-            },
-            { $project: { _id: 0 } },
-          ],
-          completed: [
-            {
-              $group: {
-                _id: null,
-                count: {
-                  $sum: {
-                    $cond: [
-                      { $in: ['$status', [ORDER_STATUS.COMPLETED]] },
-                      1,
-                      0,
-                    ],
-                  },
-                },
-                amount: {
-                  $sum: {
-                    $cond: [
-                      { $in: ['$status', [ORDER_STATUS.COMPLETED]] },
-                      '$totalAmount',
-                      0,
-                    ],
-                  },
-                },
-              },
-            },
-            { $project: { _id: 0 } },
-          ],
-          inProgress: [
-            {
-              $group: {
-                _id: null,
-                count: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $in: [
-                          '$status',
-                          [ORDER_STATUS.PROCESSING, ORDER_STATUS.PENDING],
-                        ],
-                      },
-                      1,
-                      0,
-                    ],
-                  },
-                },
-              },
-            },
-            { $project: { _id: 0 } },
-          ],
-        },
-      },
-      {
-        $project: {
-          totalOrders: {
-            $ifNull: [{ $arrayElemAt: ['$totals.totalOrders', 0] }, 0],
-          },
-          totalRevenue: {
-            $ifNull: [{ $arrayElemAt: ['$totals.totalAmount', 0] }, 0],
-          },
-          inProgressCount: {
-            $ifNull: [{ $arrayElemAt: ['$inProgress.count', 0] }, 0],
-          },
-          completedCount: {
-            $ifNull: [{ $arrayElemAt: ['$completed.count', 0] }, 0],
-          },
-          completedAmount: {
-            $ifNull: [{ $arrayElemAt: ['$completed.amount', 0] }, 0],
-          },
-        },
-      },
-    ]);
-  }
-
-  async getChartData(data: RangeResult) {
-    const { fromDate, toDate, values } = data;
-    const from = new Date(new Date(fromDate).getTime());
-    const to = new Date(new Date(toDate).getTime());
-    console.log(from);
-    console.log(to);
-    return this.orderModel.aggregate([
-      {
-        $match: {
-          isDeleted: false,
-          createdAt: {
-            $gte: from,
-            $lt: to,
-          },
-          status: { $in: [ORDER_STATUS.COMPLETED] },
-        },
-      },
-      {
-        $addFields: {
-          totalMs: { $subtract: [to, from] },
-          relMs: { $subtract: ['$createdAt', from] },
-        },
-      },
-      {
-        $addFields: {
-          bucket: {
-            $floor: {
-              $multiply: [{ $divide: ['$relMs', '$totalMs'] }, values],
-            },
+            $lt: new Date(new Date(toDate).setHours(24, 0, 0, 0) - SEVEN_HOURS),
           },
         },
       },
       {
         $group: {
-          _id: '$bucket',
-          totalProfit: { $sum: '$totalAmount' },
+          _id: null,
+          totalOrders: { $sum: 1 },
+          totalRevenue: {
+            $sum: {
+              $cond: [
+                { $eq: ['$status', ORDER_STATUS.COMPLETED] },
+                '$totalAmount',
+                0,
+              ],
+            },
+          },
+          completedCount: {
+            $sum: {
+              $cond: [{ $eq: ['$status', ORDER_STATUS.COMPLETED] }, 1, 0],
+            },
+          },
+          completedAmount: {
+            $sum: {
+              $cond: [
+                { $eq: ['$status', ORDER_STATUS.COMPLETED] },
+                '$totalAmount',
+                0,
+              ],
+            },
+          },
+          inProgressCount: {
+            $sum: {
+              $cond: [
+                {
+                  $in: [
+                    '$status',
+                    [ORDER_STATUS.PROCESSING, ORDER_STATUS.PENDING],
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
         },
       },
-      {
-        $facet: {
-          buckets: [
-            { $sort: { _id: 1 } },
-            {
-              $group: {
-                _id: null,
-                data: { $push: { bucket: '$_id', revenue: '$totalProfit' } },
+      { $project: { _id: 0 } },
+    ]);
+  }
+
+  async getRevenueSeries(data: RangeResult) {
+    const { toDate, values, unit } = data;
+    const tz = 'Asia/Ho_Chi_Minh';
+    const to = new Date(toDate);
+    const [doc] = await this.orderModel
+      .aggregate<{ result: Array<{ bucket: number; revenue: number }> }>([
+        {
+          $match: {
+            isDeleted: false,
+            status: ORDER_STATUS.COMPLETED,
+            ...(unit === 'year'
+              ? { createdAt: { $gte: new Date(to.getFullYear() - 5, 0, 1) } }
+              : {}),
+          },
+        },
+        {
+          $set: {
+            anchor: {
+              $dateTrunc: {
+                date: {
+                  $dateSubtract: {
+                    startDate: to,
+                    unit,
+                    amount: values - 1,
+                    timezone: tz,
+                  },
+                },
+                unit,
+                timezone: tz,
               },
             },
-          ],
+            upperBoundExclusive: {
+              $dateAdd: {
+                startDate: { $dateTrunc: { date: to, unit, timezone: tz } },
+                unit,
+                amount: 1,
+                timezone: tz,
+              },
+            },
+          },
         },
-      },
-      {
-        $addFields: {
-          allBuckets: Array.from({ length: values }, (_, i) => i),
+
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $gte: ['$createdAt', '$anchor'] },
+                { $lt: ['$createdAt', '$upperBoundExclusive'] },
+              ],
+            },
+          },
         },
-      },
-      {
-        $project: {
-          result: {
-            $map: {
-              input: '$allBuckets',
-              as: 'i',
-              in: {
-                bucket: '$$i',
-                revenue: {
-                  $let: {
-                    vars: {
-                      found: {
-                        $arrayElemAt: [
-                          {
-                            $filter: {
-                              input: { $arrayElemAt: ['$buckets.data', 0] },
-                              as: 'd',
-                              cond: { $eq: ['$$d.bucket', '$$i'] },
-                            },
-                          },
-                          0,
-                        ],
+        {
+          $addFields: {
+            bucket: {
+              $dateDiff: {
+                startDate: '$anchor',
+                endDate: '$createdAt',
+                unit,
+                timezone: tz,
+              },
+            },
+          },
+        },
+        { $match: { bucket: { $gte: 0, $lt: values } } },
+
+        { $group: { _id: '$bucket', revenue: { $sum: '$totalAmount' } } },
+
+        {
+          $group: {
+            _id: null,
+            kv: { $push: { k: { $toString: '$_id' }, v: '$revenue' } },
+          },
+        },
+        { $project: { _id: 0, map: { $arrayToObject: '$kv' } } },
+        {
+          $project: {
+            result: {
+              $map: {
+                input: { $range: [0, values] },
+                as: 'i',
+                in: {
+                  bucket: '$$i',
+                  revenue: {
+                    $ifNull: [
+                      {
+                        $getField: {
+                          input: '$map',
+                          field: { $toString: '$$i' },
+                        },
                       },
-                    },
-                    in: { $ifNull: ['$$found.revenue', 0] },
+                      0,
+                    ],
                   },
                 },
               },
             },
           },
         },
-      },
-    ]);
+      ])
+      .exec();
+    return {
+      result:
+        (doc?.result as Array<{ bucket: number; revenue: number }>) ??
+        Array.from({ length: values }, (_, i) => ({
+          bucket: i,
+          revenue: 0,
+        })),
+    };
   }
 }
