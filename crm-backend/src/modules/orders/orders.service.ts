@@ -188,6 +188,9 @@ export class OrdersService {
   }
   async getOrderChart(range: string) {
     const data = getDateRange(range);
-    return { data: await this.orderRepository.getChartData(data), range };
+    return {
+      data: [await this.orderRepository.getRevenueSeries(data)],
+      range,
+    };
   }
 }
